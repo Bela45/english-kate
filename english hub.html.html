@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Katelyn English Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#5BBDE4;--mint:#4DC99A;--rose:#F0607A;
+  --lilac:#A87DE8;--coral:#F47C5A;--sun:#F5C842;
+  --ink:#1E1840;--muted:#6B6490;--bg:#EEF1FB;
+  --nav-h:64px;
+  --r-sm:12px;--r-md:18px;--r-lg:24px;
+  --sh:0 4px 18px rgba(30,24,64,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);color:var(--ink);
+  min-height:100vh;overflow-x:hidden;
+  padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));
+}
+
+/* HEADER */
+.hdr{
+  background:linear-gradient(110deg,var(--mint) 0%,var(--sky) 55%,var(--lilac) 100%);
+  padding:12px 16px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:90;
+  box-shadow:0 3px 16px rgba(91,189,228,.3);
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{
+  width:42px;height:42px;background:rgba(255,255,255,.28);
+  border:2px solid rgba(255,255,255,.45);border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+  animation:floatY 3s ease-in-out infinite;
+}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.logo-words h1{
+  font-family:'Baloo 2',cursive;font-size:1.15rem;font-weight:800;
+  color:#fff;line-height:1.1;text-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.logo-words h1 span{color:var(--sun)}
+.logo-words small{font-size:.65rem;font-weight:700;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.6px}
+.star-bdg{
+  background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.4);
+  border-radius:50px;padding:6px 14px;
+  display:flex;align-items:center;gap:5px;
+  font-weight:900;font-size:1rem;color:#fff;
+}
+.star-bdg.pop{animation:starPop .35s ease}
+@keyframes starPop{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+
+/* BOTTOM NAV */
+.bnav{
+  position:fixed;bottom:0;left:0;right:0;
+  height:var(--nav-h);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  background:#fff;display:flex;
+  box-shadow:0 -3px 20px rgba(30,24,64,.10);
+  border-radius:20px 20px 0 0;z-index:90;
+}
+.nb{
+  flex:1;border:none;background:transparent;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  padding:0 4px 4px;position:relative;
+}
+.nb .ni{font-size:1.4rem;transition:transform .2s;line-height:1}
+.nb .nl{font-size:.58rem;font-weight:800;color:#bbb;text-transform:uppercase;letter-spacing:.3px}
+.nb.on .ni{transform:translateY(-2px) scale(1.1)}
+.nb.on .nl{color:var(--lilac)}
+.nb.on::after{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:32px;height:3px;background:var(--lilac);border-radius:0 0 5px 5px;
+}
+
+/* PAGES */
+.pg{display:none;max-width:560px;margin:0 auto;padding:18px 14px 28px}
+.pg.on{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARD */
+.card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh);padding:18px 16px;margin-bottom:14px}
+
+/* PAGE TITLE */
+.ptitle{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.psub{font-size:.85rem;font-weight:700;color:var(--muted);margin-bottom:18px}
+
+/* PILL ROW */
+.pills{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{
+  font-family:'Baloo 2',cursive;font-size:.82rem;font-weight:700;
+  padding:7px 16px;border-radius:50px;border:2px solid #dde0f0;
+  background:#fff;color:var(--muted);white-space:nowrap;cursor:pointer;
+  transition:all .2s;-webkit-tap-highlight-color:transparent;
+}
+.pill.on{background:var(--sky);border-color:var(--sky);color:#fff;box-shadow:0 3px 12px rgba(91,189,228,.38)}
+
+/* BUTTONS */
+.btn{
+  font-family:'Baloo 2',cursive;font-size:.98rem;font-weight:700;
+  padding:13px 20px;border:none;border-radius:50px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  transition:filter .2s,transform .15s;-webkit-tap-highlight-color:transparent;
+  width:100%;letter-spacing:.1px;
+}
+.btn:active{transform:scale(.96)}
+.btn-g{background:linear-gradient(135deg,#4DC99A,#5BBDE4);color:#fff;box-shadow:0 4px 14px rgba(77,201,154,.35)}
+.btn-p{background:linear-gradient(135deg,#A87DE8,#F0607A);color:#fff;box-shadow:0 4px 14px rgba(168,125,232,.32)}
+.btn-r{background:linear-gradient(135deg,#F0607A,#F47C5A);color:#fff;box-shadow:0 4px 14px rgba(240,96,122,.32)}
+.btn-o{background:#f0eeff;border:2px solid #ddd8f8;color:var(--ink);box-shadow:none}
+
+/* PROGRESS BAR */
+.pbar{background:#e8eaf4;border-radius:50px;height:8px;overflow:hidden;margin-bottom:16px}
+.pfill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--mint),var(--sky));transition:width .5s}
+
+/* FEEDBACK */
+.fb{border-radius:var(--r-sm);padding:12px 16px;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;text-align:center;margin-top:12px;display:none}
+.fb.ok{background:#dffaef;color:#1a7a50;display:block;animation:popIn .25s}
+.fb.bad{background:#ffe8ef;color:#c0384f;display:block;animation:popIn .25s}
+@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ── HOME ── */
+.hero{background:linear-gradient(135deg,#f0f4ff,#fdf0ff);border-radius:var(--r-lg);padding:26px 18px 20px;text-align:center;margin-bottom:14px;border:2px solid rgba(168,125,232,.12)}
+.hero-em{font-size:4rem;display:block;margin-bottom:10px;animation:mascot 2.5s ease-in-out infinite}
+@keyframes mascot{0%,100%{transform:scale(1) translateY(0)}40%{transform:scale(1.08) translateY(-6px)}}
+.hero h2{font-family:'Baloo 2',cursive;font-size:clamp(1.3rem,5vw,1.8rem);font-weight:800;line-height:1.2;margin-bottom:8px}
+.hero h2 em{font-style:normal;color:var(--rose)}
+.hero p{font-size:.88rem;font-weight:700;color:var(--muted);line-height:1.55}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.fc{background:#fff;border-radius:var(--r-md);padding:18px 12px;text-align:center;box-shadow:var(--sh);cursor:pointer;border:2px solid transparent;transition:transform .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent}
+.fc:active{transform:scale(.96)}
+.fc:nth-child(1){border-color:rgba(91,189,228,.3)}
+.fc:nth-child(2){border-color:rgba(240,96,122,.3)}
+.fc:nth-child(3){border-color:rgba(168,125,232,.3)}
+.fc:nth-child(4){border-color:rgba(77,201,154,.3)}
+.fc .fi{font-size:2.4rem;display:block;margin-bottom:7px}
+.fc h3{font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:700;margin-bottom:3px}
+.fc p{font-size:.7rem;font-weight:700;color:#aaa;line-height:1.4}
+.wotd{background:linear-gradient(135deg,#fff9e6,#fff0f7);border-radius:var(--r-lg);padding:18px 16px;border:2px solid rgba(245,200,66,.2);display:flex;align-items:center;gap:14px}
+.wotd-em{font-size:3rem;flex-shrink:0;animation:mascot 3s ease-in-out infinite}
+.wotd small{font-size:.65rem;font-weight:800;color:var(--coral);text-transform:uppercase;letter-spacing:.8px;display:block}
+.wotd-w{font-family:'Baloo 2',cursive;font-size:1.9rem;font-weight:800;line-height:1.1}
+.wotd-d{font-size:.8rem;font-weight:700;color:var(--muted);margin-top:2px;line-height:1.4}
+
+/* ── SPELLING ── */
+.sp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.sp-ctr{font-size:.78rem;font-weight:800;color:#bbb}
+.sp-chip{font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:700;color:var(--lilac);background:#f4efff;padding:4px 12px;border-radius:50px}
+.word-box{text-align:center;padding:22px 14px;background:linear-gradient(135deg,#f0f9ff,#f7f0ff);border-radius:var(--r-md);margin-bottom:16px}
+.word-em{font-size:4rem;display:block;margin-bottom:7px}
+.word-hn{font-size:.85rem;font-weight:700;color:#888;margin-bottom:5px}
+.word-df{display:inline-block;font-size:.82rem;font-weight:700;font-style:italic;color:#5a5a7a;background:rgba(255,255,255,.8);border-radius:8px;padding:5px 12px}
+.blanks{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.lbox{
+  width:52px;height:62px;border:none;border-bottom:3px solid var(--ink);
+  background:transparent;font-family:'Baloo 2',cursive;font-weight:800;
+  text-align:center;text-transform:uppercase;color:var(--ink);outline:none;
+  -webkit-appearance:none;transition:border-color .2s;
+  /* Fix iOS zoom - must be at least 16px */
+  font-size:1.8rem;
+}
+@media (max-width:400px){.lbox{width:44px;height:56px}}
+.lbox:focus{border-color:var(--sky)}
+.lbox.ok{border-color:var(--mint);color:var(--mint)}
+.lbox.bad{border-color:var(--rose);color:var(--rose);animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.sp-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sp-btns .full{grid-column:1/-1}
+.wlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:7px;margin-top:10px}
+.wpill{background:#f5f5fa;border-radius:9px;padding:8px 6px;font-weight:800;font-size:.82rem;text-align:center;border:2px solid #e8e8f0}
+.wpill.done{background:#e0fff2;border-color:var(--mint);color:#1a7a50}
+
+/* ── QUIZ ── */
+.qhero{text-align:center;padding:20px 14px}
+.qhero .qbig{font-size:3.5rem;display:block;margin-bottom:10px;animation:mascot 2s infinite}
+.qhero h3{font-family:'Baloo 2',cursive;font-size:1.6rem;font-weight:800;margin-bottom:8px}
+.qhero p{font-size:.88rem;font-weight:700;color:var(--muted);margin-bottom:20px;line-height:1.5}
+.qtype-list{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+.qti{background:#fff;border:2px solid #e4e0f5;border-radius:var(--r-md);padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.qti.on,.qti:hover{border-color:var(--lilac);background:#f7f3ff;transform:translateX(4px)}
+.qti .qi{font-size:1.9rem;flex-shrink:0}
+.qti strong{display:block;font-size:.92rem;font-weight:800}
+.qti span{font-size:.75rem;font-weight:700;color:#aaa}
+.qsbar{display:flex;justify-content:space-around;background:#fff;border-radius:var(--r-md);padding:12px 10px;box-shadow:var(--sh);margin-bottom:12px}
+.qs{text-align:center}
+.qs .sn{font-family:'Baloo 2',cursive;font-size:1.7rem;font-weight:800;line-height:1}
+.qs .sl{font-size:.65rem;font-weight:800;color:#bbb;text-transform:uppercase;letter-spacing:.5px}
+.qs.g .sn{color:var(--mint)}.qs.b .sn{color:var(--sky)}.qs.r .sn{color:var(--rose)}
+.qcard{background:#fff;border-radius:var(--r-lg);padding:20px 16px;box-shadow:var(--sh)}
+.qnum{font-size:.7rem;font-weight:800;color:#ccc;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.qtxt{font-family:'Baloo 2',cursive;font-size:clamp(1rem,4.5vw,1.35rem);font-weight:700;color:var(--ink);margin-bottom:18px;line-height:1.45}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{background:#f8f4ff;border:2px solid #e8e0f8;border-radius:var(--r-sm);padding:13px 14px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:.92rem;color:var(--ink);display:flex;align-items:center;gap:11px;transition:all .18s;-webkit-tap-highlight-color:transparent;text-align:left;width:100%}
+.opt:not(:disabled):hover{border-color:var(--lilac);background:#f2eaff;transform:translateX(4px)}
+.opt.ok{background:#e0fff2;border-color:var(--mint);color:#1a7a50}
+.opt.bad{background:#ffe8ef;border-color:var(--rose);color:#c0384f}
+.olbl{width:28px;height:28px;border-radius:50%;background:var(--lilac);color:#fff;font-family:'Baloo 2',cursive;font-size:.85rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.opt.ok .olbl{background:var(--mint)}.opt.bad .olbl{background:var(--rose)}
+.finp{
+  width:100%;padding:15px 16px;margin-bottom:12px;
+  border:2px solid #ddd8f8;border-radius:var(--r-sm);
+  font-family:'Baloo 2',cursive;font-weight:700;
+  color:var(--ink);text-align:center;letter-spacing:4px;text-transform:uppercase;
+  outline:none;-webkit-appearance:none;background:#fff;
+  transition:border-color .2s;
+  font-size:1.3rem;
+}
+/* Prevent iOS zoom: input font-size must be >= 16px */
+@media (max-width:767px){.finp{font-size:16px;letter-spacing:2px}}
+.finp:focus{border-color:var(--lilac)}
+.ffb{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;text-align:center;min-height:26px;margin-bottom:10px}
+.nbwrap{text-align:center;margin-top:12px}
+.rescard{text-align:center;padding:30px 20px;background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh)}
+.rescard .trophy{font-size:4rem;display:block;animation:mascot 2s infinite;margin-bottom:10px}
+.rescard h3{font-family:'Baloo 2',cursive;font-size:1.9rem;font-weight:800}
+.res-sc{font-family:'Baloo 2',cursive;font-size:3.2rem;font-weight:800;color:var(--lilac);margin:8px 0;line-height:1}
+.res-st{font-size:2rem;letter-spacing:5px;margin:6px 0}
+.res-mg{font-size:.88rem;font-weight:700;color:var(--muted);margin-bottom:20px}
+.res-bts{display:flex;flex-direction:column;gap:9px}
+
+/* ── LIBRARY ── */
+.bkgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bkcard{background:#fff;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh);cursor:pointer;transition:transform .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent}
+.bkcard:active{transform:scale(.97)}
+.bkcover{height:120px;display:flex;align-items:center;justify-content:center;font-size:3.8rem}
+.bkinfo{padding:11px 11px 13px}
+.bklvl{display:inline-block;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:50px;margin-bottom:4px}
+.bklvl.L1{background:#d4f5e7;color:#1a7a50}
+.bklvl.L2{background:#ffe8c8;color:#c06010}
+.bklvl.L3{background:#ffe0e8;color:#c0384f}
+.bktitle{font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:700;line-height:1.2;margin-bottom:3px}
+.bkdesc{font-size:.7rem;font-weight:700;color:#aaa;line-height:1.35;margin-bottom:9px}
+.bkbtn{display:block;width:100%;padding:8px;border:none;border-radius:9px;cursor:pointer;background:linear-gradient(135deg,var(--rose),var(--lilac));color:#fff;font-family:'Baloo 2',cursive;font-size:.8rem;font-weight:700}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(30,24,64,.58);z-index:200;align-items:flex-end;justify-content:center;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.modal-bg.open{display:flex;animation:bgFade .25s}
+@keyframes bgFade{from{opacity:0}to{opacity:1}}
+.modal{background:#fafaf7;border-radius:24px 24px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 -8px 50px rgba(0,0,0,.18);animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.m-handle{width:36px;height:4px;background:#ddd;border-radius:4px;margin:12px auto 0}
+.m-head{padding:12px 18px 14px;border-bottom:2px dashed #eae6f0;display:flex;justify-content:space-between;align-items:flex-start}
+.m-head h2{font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800}
+.m-lvltag{font-size:.65rem;font-weight:800;color:#bbb;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.m-close{width:34px;height:34px;border-radius:50%;border:none;background:#f0e8ff;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.m-body{padding:18px 18px 28px}
+.m-illo{font-size:5rem;text-align:center;margin-bottom:14px}
+.stxt{font-size:1rem;line-height:1.85;color:#3a3a5a;font-weight:700}
+.stxt p{margin-bottom:11px}
+.stxt strong{color:var(--rose);font-weight:900}
+.vocab{background:linear-gradient(135deg,#fff0c0,#ffd8e0);border-radius:5px;padding:1px 5px;font-weight:900;cursor:help;border-bottom:2px dotted var(--coral)}
+.m-quiz{margin-top:20px;padding-top:18px;border-top:2px dashed #eae6f0}
+.m-quiz h4{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:700;margin-bottom:10px}
+.m-qtxt{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:10px;line-height:1.5}
+.ropt{display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:7px;border:2px solid #e8e0f8;border-radius:var(--r-sm);background:#fff;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:.88rem;color:var(--ink);transition:all .18s;-webkit-tap-highlight-color:transparent}
+.ropt:not(:disabled):hover{border-color:var(--lilac);background:#f8f0ff}
+.ropt.ok{background:#e0fff2;border-color:var(--mint);color:#1a7a50}
+.ropt.bad{background:#ffe8ef;border-color:var(--rose);color:#c0384f}
+.rfb{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;margin-top:10px;display:none}
+
+/* ── PROGRESS ── */
+.stgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stcard{background:#fff;border-radius:var(--r-md);padding:16px 12px;text-align:center;box-shadow:var(--sh)}
+.stcard .stn{font-family:'Baloo 2',cursive;font-size:2.6rem;font-weight:800;line-height:1}
+.stcard .stl{font-size:.7rem;font-weight:800;color:#bbb;text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
+.stcard:nth-child(1) .stn{color:var(--sky)}
+.stcard:nth-child(2) .stn{color:var(--rose)}
+.stcard:nth-child(3) .stn{color:var(--mint)}
+.stcard:nth-child(4) .stn{color:var(--lilac)}
+.bdggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.bdg{background:#fff;border-radius:var(--r-sm);padding:12px 6px;text-align:center;box-shadow:var(--sh);opacity:.3;filter:grayscale(.4);transition:transform .2s,opacity .3s}
+.bdg.on{opacity:1;filter:none}
+.bdg .be{font-size:1.8rem;display:block;margin-bottom:4px}
+.bdg .bn{font-family:'Baloo 2',cursive;font-size:.62rem;font-weight:700;line-height:1.2}
+.bdg .bd{font-size:.55rem;color:#ccc;font-weight:700;margin-top:2px;line-height:1.3}
+.skrow{margin-bottom:12px}
+.skhd{display:flex;justify-content:space-between;font-size:.8rem;font-weight:800;margin-bottom:5px}
+.skhd span:last-child{color:#aaa}
+.skbg{background:#e8eaf4;border-radius:50px;height:11px;overflow:hidden}
+.skfill{height:100%;border-radius:50px;transition:width 1s ease}
+
+/* CONFETTI */
+.cp{position:fixed;pointer-events:none;z-index:9999;animation:cpFall 1.6s ease-in forwards}
+@keyframes cpFall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+/* DESKTOP */
+@media (min-width:600px){
+  body{padding-bottom:0}
+  .bnav{position:static;height:auto;border-radius:0;box-shadow:0 3px 16px rgba(30,24,64,.07);padding:4px 20px;justify-content:center;gap:4px}
+  .nb{flex:0 0 auto;flex-direction:row;gap:7px;padding:10px 18px;border-radius:50px}
+  .nb .ni{font-size:1.15rem}
+  .nb .nl{font-size:.8rem;text-transform:none;letter-spacing:0}
+  .nb.on{background:#f3eeff}
+  .nb.on .ni{transform:none}
+  .nb.on::after{display:none}
+  .pg{max-width:680px;padding:26px 20px 40px}
+  .feat-grid{grid-template-columns:repeat(4,1fr)}
+  .qtype-list{flex-direction:row}
+  .qti{flex-direction:column;text-align:center}
+  .qti:hover{transform:translateY(-3px)}
+  .sp-btns{grid-template-columns:1fr 1fr 1fr}
+  .sp-btns .full{grid-column:auto}
+  .opts{display:grid;grid-template-columns:1fr 1fr}
+  .res-bts{flex-direction:row;justify-content:center}
+  .bkgrid{grid-template-columns:repeat(3,1fr)}
+  .bdggrid{grid-template-columns:repeat(6,1fr)}
+  .stgrid{grid-template-columns:repeat(4,1fr)}
+  .modal-bg{align-items:center;padding:20px}
+  .modal{border-radius:24px;max-height:84vh;animation:modalCtr .28s ease}
+  @keyframes modalCtr{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .m-handle{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="logo">
+    <div class="logo-icon">📚</div>
+    <div class="logo-words">
+      <h1>Katelyn <span>English</span> Hub</h1>
+      <small>Learn · Read · Grow</small>
+    </div>
+  </div>
+  <div class="star-bdg" id="star-bdg">⭐ <span id="starCount">0</span></div>
+</header>
+
+<nav class="bnav">
+  <button class="nb on" onclick="go('home')"     data-p="home">    <span class="ni">🏠</span><span class="nl">Home</span></button>
+  <button class="nb"    onclick="go('spelling')" data-p="spelling"><span class="ni">✏️</span><span class="nl">Spelling</span></button>
+  <button class="nb"    onclick="go('quiz')"     data-p="quiz">    <span class="ni">🎯</span><span class="nl">Quiz</span></button>
+  <button class="nb"    onclick="go('library')"  data-p="library"> <span class="ni">📖</span><span class="nl">Library</span></button>
+  <button class="nb"    onclick="go('progress')" data-p="progress"><span class="ni">🏆</span><span class="nl">Progress</span></button>
+</nav>
+
+<!-- HOME -->
+<div id="pg-home" class="pg on">
+  <div class="hero">
+    <span class="hero-em">🦋</span>
+    <h2>Welcome to <em>Katelyn's</em><br>English Hub!</h2>
+    <p>Spell new words, read stories, and take fun quizzes! 🌟</p>
+  </div>
+  <div class="feat-grid">
+    <div class="fc" onclick="go('spelling')"><span class="fi">✏️</span><h3>Spelling</h3><p>Learn words with pictures</p></div>
+    <div class="fc" onclick="go('quiz')">    <span class="fi">🎯</span><h3>Quiz</h3>    <p>Test &amp; earn stars!</p></div>
+    <div class="fc" onclick="go('library')"> <span class="fi">📖</span><h3>Library</h3> <p>Fun stories to read</p></div>
+    <div class="fc" onclick="go('progress')"><span class="fi">🏆</span><h3>Progress</h3><p>My badges &amp; stats</p></div>
+  </div>
+  <div class="wotd">
+    <div class="wotd-em" id="wotd-em">🌟</div>
+    <div>
+      <small>🌈 Word of the Day</small>
+      <div class="wotd-w" id="wotd-w">BRAVE</div>
+      <div class="wotd-d" id="wotd-d">Strong enough to face your fears</div>
+    </div>
+  </div>
+</div>
+
+<!-- SPELLING -->
+<div id="pg-spelling" class="pg">
+  <div class="ptitle">✏️ Spelling Practice</div>
+  <div class="psub">Pick a level and practice spelling words!</div>
+  <div class="pills" id="lv-pills">
+    <button class="pill on" onclick="setLv(0,this)">⭐ Level 1</button>
+    <button class="pill"    onclick="setLv(1,this)">⭐⭐ Level 2</button>
+    <button class="pill"    onclick="setLv(2,this)">⭐⭐⭐ Level 3</button>
+  </div>
+  <div class="card">
+    <div class="sp-head">
+      <span class="sp-ctr" id="sp-ctr">Word 1 of 10</span>
+      <span class="sp-chip" id="sp-score">Score: 0</span>
+    </div>
+    <div class="pbar"><div class="pfill" id="sp-bar" style="width:10%"></div></div>
+    <div class="word-box">
+      <span class="word-em" id="sp-em">🐱</span>
+      <div class="word-hn" id="sp-hint">This animal says meow</div>
+      <div class="word-df" id="sp-def">A small furry pet</div>
+    </div>
+    <div class="blanks" id="blanks"></div>
+    <div class="sp-btns">
+      <button class="btn btn-g full" onclick="checkSpell()">✅ Check Answer</button>
+      <button class="btn btn-p"      onclick="giveHint()">💡 Hint</button>
+      <button class="btn btn-o"      onclick="nextWord()">⏭ Skip</button>
+    </div>
+    <div class="fb" id="sp-fb"></div>
+  </div>
+  <div class="card">
+    <div class="ptitle" style="font-size:1.2rem;margin-bottom:8px">📋 Word List</div>
+    <div class="wlist" id="wlist"></div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="pg-quiz" class="pg">
+  <div id="qz-start">
+    <div class="card qhero">
+      <span class="qbig">🎯</span>
+      <h3>Word Quiz!</h3>
+      <p>Answer 10 questions and earn stars. Choose a quiz type below!</p>
+      <div class="qtype-list">
+        <div class="qti on" onclick="pickType('mc',this)"><span class="qi">🔤</span><div><strong>Multiple Choice</strong><span>Pick the right answer</span></div></div>
+        <div class="qti"    onclick="pickType('fill',this)"><span class="qi">📝</span><div><strong>Fill the Blank</strong><span>Type the missing word</span></div></div>
+        <div class="qti"    onclick="pickType('match',this)"><span class="qi">🔗</span><div><strong>Word + Meaning</strong><span>Match word to definition</span></div></div>
+      </div>
+      <button class="btn btn-g" onclick="startQuiz()">🚀 Start Quiz!</button>
+    </div>
+  </div>
+  <div id="qz-game" style="display:none">
+    <div class="qsbar">
+      <div class="qs g"><div class="sn" id="q-ok">0</div><div class="sl">Correct ✅</div></div>
+      <div class="qs b"><div class="sn" id="q-cur">1/10</div><div class="sl">Question</div></div>
+      <div class="qs r"><div class="sn" id="q-bad">0</div><div class="sl">Wrong ❌</div></div>
+    </div>
+    <div class="pbar"><div class="pfill" id="qz-bar" style="width:10%"></div></div>
+    <div class="qcard" id="qcard"></div>
+    <div class="nbwrap">
+      <button class="btn btn-g" id="nbtn" onclick="nextQ()" style="display:none;max-width:260px;margin:0 auto">Next ➡️</button>
+    </div>
+  </div>
+  <div id="qz-results" style="display:none">
+    <div class="rescard">
+      <span class="trophy" id="res-tr">🏆</span>
+      <h3 id="res-ti">Amazing!</h3>
+      <div class="res-sc" id="res-sc">8/10</div>
+      <div class="res-st" id="res-st">⭐⭐⭐</div>
+      <p class="res-mg" id="res-mg">You are a superstar!</p>
+      <div class="res-bts">
+        <button class="btn btn-g" onclick="startQuiz()">🔄 Play Again</button>
+        <button class="btn btn-p" onclick="go('library')">📖 Read a Story</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIBRARY -->
+<div id="pg-library" class="pg">
+  <div class="ptitle">📖 Story Library</div>
+  <div class="psub">Pick a book and start reading!</div>
+  <div class="pills" id="lib-pills">
+    <button class="pill on" onclick="filterBks('all',this)">📚 All</button>
+    <button class="pill"    onclick="filterBks('animals',this)">🐾 Animals</button>
+    <button class="pill"    onclick="filterBks('adventure',this)">🌟 Adventure</button>
+    <button class="pill"    onclick="filterBks('nature',this)">🌿 Nature</button>
+    <button class="pill"    onclick="filterBks('friendship',this)">💛 Friendship</button>
+  </div>
+  <div class="bkgrid" id="bkgrid"></div>
+</div>
+
+<!-- PROGRESS -->
+<div id="pg-progress" class="pg">
+  <div class="ptitle">🏆 My Progress</div>
+  <div class="psub">See how much you have learned!</div>
+  <div class="stgrid">
+    <div class="stcard"><div class="stn" id="pr-wd">0</div><div class="stl">Words Learned</div></div>
+    <div class="stcard"><div class="stn" id="pr-qz">0</div><div class="stl">Quizzes Taken</div></div>
+    <div class="stcard"><div class="stn" id="pr-bk">0</div><div class="stl">Books Read</div></div>
+    <div class="stcard"><div class="stn" id="pr-st">0</div><div class="stl">Stars ⭐</div></div>
+  </div>
+  <div class="card">
+    <div class="ptitle" style="font-size:1.2rem;margin-bottom:12px">🎖️ My Badges</div>
+    <div class="bdggrid" id="bdggrid"></div>
+  </div>
+  <div class="card">
+    <div class="ptitle" style="font-size:1.2rem;margin-bottom:14px">📊 Skills</div>
+    <div id="skdiv"></div>
+  </div>
+</div>
+
+<!-- READER MODAL -->
+<div class="modal-bg" id="modal-bg" onclick="onBgClick(event)">
+  <div class="modal">
+    <div class="m-handle"></div>
+    <div class="m-head">
+      <div>
+        <div class="m-lvltag" id="m-lvl">Level 1</div>
+        <h2 id="m-title">Book Title</h2>
+      </div>
+      <button class="m-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="m-body">
+      <div class="m-illo"  id="m-illo">🐰</div>
+      <div class="stxt"    id="m-story"></div>
+      <div class="m-quiz"  id="m-quiz"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── DATA ── */
+var LEVELS=[
+ [{word:"CAT",emoji:"🐱",hint:"This animal says meow",def:"A small furry pet"},
+  {word:"DOG",emoji:"🐶",hint:"This animal barks",def:"A loyal furry friend"},
+  {word:"SUN",emoji:"☀️",hint:"It shines in the sky",def:"The star that gives us light"},
+  {word:"RUN",emoji:"🏃",hint:"Moving very fast on foot",def:"To move your legs quickly"},
+  {word:"HAT",emoji:"🎩",hint:"You wear it on your head",def:"A covering for your head"},
+  {word:"BIG",emoji:"🐘",hint:"Elephants are very this",def:"Very large in size"},
+  {word:"FUN",emoji:"😄",hint:"Games and play are this",def:"Enjoyment and happiness"},
+  {word:"RED",emoji:"🍎",hint:"The color of apples",def:"A bright warm color"},
+  {word:"BED",emoji:"🛏️",hint:"You sleep here at night",def:"A place to sleep and rest"},
+  {word:"JAM",emoji:"🍓",hint:"Spread it on toast",def:"Sweet fruit spread"}],
+ [{word:"BRAVE",emoji:"🦁",hint:"Lions are known to be this",def:"Strong enough to face fears"},
+  {word:"CLOUD",emoji:"☁️",hint:"Floats in the sky",def:"White fluffy thing in the sky"},
+  {word:"SMILE",emoji:"😊",hint:"Your mouth does this when happy",def:"A happy expression"},
+  {word:"PLANT",emoji:"🌱",hint:"It grows from a seed",def:"A living thing that grows"},
+  {word:"STONE",emoji:"🪨",hint:"Hard and found on the ground",def:"A small piece of rock"},
+  {word:"BREAD",emoji:"🍞",hint:"Made from flour and baked",def:"A food we eat at meals"},
+  {word:"LIGHT",emoji:"💡",hint:"The opposite of dark",def:"Something that lets us see"},
+  {word:"FROG",emoji:"🐸",hint:"Green and jumps a lot",def:"An amphibian that hops"},
+  {word:"DREAM",emoji:"🌙",hint:"Stories your mind makes at night",def:"Images seen while sleeping"},
+  {word:"CLEAN",emoji:"🧼",hint:"After washing, dishes become this",def:"Free from dirt"}],
+ [{word:"JOURNEY",emoji:"🗺️",hint:"A long trip somewhere",def:"Travel from one place to another"},
+  {word:"COURAGE",emoji:"🏅",hint:"Being brave and strong",def:"Bravery in difficult times"},
+  {word:"LIBRARY",emoji:"📚",hint:"A place full of books",def:"Building with many books to read"},
+  {word:"FREEDOM",emoji:"🕊️",hint:"Being free to do things",def:"The right to act without limits"},
+  {word:"SHELTER",emoji:"🏠",hint:"A place to stay safe",def:"Protection from weather and danger"},
+  {word:"CURIOUS",emoji:"🔭",hint:"Wanting to learn new things",def:"Eager to know or learn something"},
+  {word:"BLANKET",emoji:"🛌",hint:"Keeps you warm at night",def:"A thick cover for sleeping"},
+  {word:"HELPFUL",emoji:"🤝",hint:"Doing good things for others",def:"Willing to give assistance"},
+  {word:"MORNING",emoji:"🌅",hint:"Start of the day",def:"The early part of the day"},
+  {word:"BIRTHDAY",emoji:"🎂",hint:"The day you were born",def:"Anniversary of one's birth"}]
+];
+
+var BOOKS=[
+ {id:1,title:"Benny the Bunny",emoji:"🐰",color:"#FFE5F3",level:"L1",lt:"Level 1",cat:"animals",desc:"A little bunny learns to be brave.",
+  story:"<p>Benny was a small white bunny. He lived in a cozy burrow under a big oak tree.</p><p>One morning, Benny woke up and smelled something sweet. It was a patch of <span class='vocab'>flowers</span> growing far away.</p><p>\"I want to see the flowers!\" said Benny. But the path was long and scary.</p><p>Benny took a deep breath. He hopped one step, then two, then three! Soon he was standing in the flowers.</p><p><strong>\"I did it!\"</strong> cheered Benny. He felt so proud and happy.</p><p>Every brave step is worth it. 🌸</p>",
+  q:"Why was Benny scared at first?",opts:["The flowers smelled bad","The path was long and scary","He forgot where he lived","The flowers were too small"],ans:1},
+ {id:2,title:"The Rainbow Cloud",emoji:"🌈",color:"#E5F3FF",level:"L1",lt:"Level 1",cat:"nature",desc:"A cloud learns what makes rain special.",
+  story:"<p>High in the sky, there was a small cloud named Cleo. Cleo was grey and felt very sad.</p><p>\"All the other clouds are white and fluffy,\" cried Cleo. \"I am grey and heavy.\"</p><p>An old cloud floated near. \"Grey clouds hold the most <span class='vocab'>rain</span>,\" it said with a smile.</p><p>Cleo floated over a dry field and let the rain fall down.</p><p>The flowers opened. The birds sang. A <strong>rainbow</strong> stretched across the sky!</p><p>\"That rainbow came from me!\" said Cleo, feeling proud. 🌈</p>",
+  q:"What did Cleo's rain create?",opts:["A storm","A rainbow","More clouds","A waterfall"],ans:1},
+ {id:3,title:"Mia Makes a Friend",emoji:"🦊",color:"#FFF5E5",level:"L2",lt:"Level 2",cat:"friendship",desc:"Mia the fox finds a new best friend.",
+  story:"<p>Mia the fox lived at the edge of the forest. She had food and a warm den, but she felt <span class='vocab'>lonely</span>.</p><p>One rainy day, she found a small hedgehog under a mushroom. \"My name is Pip,\" said the hedgehog.</p><p>Mia brought Pip home. She made warm soup and shared her blanket.</p><p>\"You are very <strong>kind</strong>,\" said Pip. \"Would you like to be friends?\"</p><p>From that day on, they played in the meadow every morning.</p><p>Kindness is the best way to make a friend. 🦔🦊</p>",
+  q:"Why did Mia feel lonely?",opts:["She had no food","She had no friends nearby","Her den was cold","She lost her way"],ans:1},
+ {id:4,title:"Leo's Big Adventure",emoji:"🦁",color:"#F0FFE5",level:"L2",lt:"Level 2",cat:"adventure",desc:"A young lion explores the wide savanna.",
+  story:"<p>Leo was a young lion cub who dreamed of seeing the whole savanna. One sunrise, he set off on his own <span class='vocab'>journey</span>.</p><p>He crossed a wide river, climbed a rocky hill, and found a waterfall he had never seen before.</p><p>\"Wow,\" whispered Leo. The water shimmered like diamonds.</p><p>His mother smiled and said, <strong>\"Curiosity is your greatest gift, Leo.\"</strong></p><p>Leo fell asleep dreaming of new adventures. 🌅</p>",
+  q:"What did Leo find on his adventure?",opts:["A hidden cave","A waterfall","A fruit tree","Another lion"],ans:1},
+ {id:5,title:"The Seed That Grew",emoji:"🌱",color:"#EDFFF4",level:"L1",lt:"Level 1",cat:"nature",desc:"One tiny seed grows into something amazing.",
+  story:"<p>Lily found a small seed in her pocket. She dug a little hole and placed the seed inside. Every day she gave it <span class='vocab'>water</span> and sunshine.</p><p>First a tiny green <strong>shoot</strong> appeared. Then leaves unfurled. Then a tall stem grew.</p><p>One morning, a beautiful sunflower opened its golden petals.</p><p>\"I grew that!\" Lily laughed with delight.</p><p>With patience and care, small things become wonderful. 🌻</p>",
+  q:"What did the seed grow into?",opts:["A tree","A sunflower","A rose","A vegetable"],ans:1},
+ {id:6,title:"Captain Coral",emoji:"🐠",color:"#E5F8FF",level:"L3",lt:"Level 3",cat:"adventure",desc:"A brave fish guards the ocean reef.",
+  story:"<p>Deep below the sparkling sea, Captain Coral was the bravest clownfish in the ocean.</p><p>One day, a hungry barracuda circled the <span class='vocab'>reef</span>.</p><p>Captain Coral felt <strong>fear</strong>, but she remembered her family. Courage means acting despite fear.</p><p>She darted forward, zigzagging until the barracuda swam away.</p><p>The whole reef cheered! \"Captain Coral!\"</p><p>True courage means protecting those you love. 🌊</p>",
+  q:"What does 'courage' mean in this story?",opts:["Being the fastest swimmer","Acting bravely despite fear","Never feeling scared","Always winning"],ans:1}
+];
+
+var QPOOL=[].concat(LEVELS[0].slice(0,4),LEVELS[1].slice(0,3),LEVELS[2].slice(0,3));
+
+var BADGES=[
+ {icon:"🌟",name:"First Star",  desc:"Earn your first star",on:false},
+ {icon:"📚",name:"Bookworm",    desc:"Read your first book",on:false},
+ {icon:"🔤",name:"Speller",     desc:"Learn 5 words",       on:false},
+ {icon:"🎯",name:"Quiz Ace",    desc:"Score 8+ on a quiz",  on:false},
+ {icon:"🌈",name:"Rdr Rainbow", desc:"Read 3 books",        on:false},
+ {icon:"🦁",name:"Brave Learner",desc:"All 3 levels",       on:false},
+ {icon:"💡",name:"Word Wizard", desc:"Learn 20 words",      on:false},
+ {icon:"🏆",name:"Champion",    desc:"Earn 20 stars",       on:false}
+];
+
+var S={
+  stars:0,wordsLearned:0,quizzesTaken:0,booksRead:0,
+  mastered:{},booksReadSet:{},
+  spLevel:0,spIdx:0,spScore:0,
+  qType:'mc',qIdx:0,qOk:0,qBad:0,qWords:[],qWait:false,qCorrectIdx:-1
+};
+
+/* ── NAV ── */
+function go(name){
+  var pages=document.querySelectorAll('.pg');
+  for(var i=0;i<pages.length;i++) pages[i].classList.remove('on');
+  var btns=document.querySelectorAll('.nb');
+  for(var i=0;i<btns.length;i++) btns[i].classList.remove('on');
+  document.getElementById('pg-'+name).classList.add('on');
+  var btn=document.querySelector('.nb[data-p="'+name+'"]');
+  if(btn) btn.classList.add('on');
+  if(name==='progress') drawProgress();
+  if(name==='library'){renderBooks('all');resetLibPills();}
+  if(name==='spelling') renderWord();
+  window.scrollTo(0,0);
+}
+
+function resetLibPills(){
+  var pills=document.querySelectorAll('#lib-pills .pill');
+  for(var i=0;i<pills.length;i++) pills[i].classList.remove('on');
+  pills[0].classList.add('on');
+}
+
+/* ── SPELLING ── */
+function setLv(idx,btn){
+  S.spLevel=idx; S.spIdx=0; S.spScore=0;
+  var pills=document.querySelectorAll('#lv-pills .pill');
+  for(var i=0;i<pills.length;i++) pills[i].classList.remove('on');
+  btn.classList.add('on');
+  renderWord();
+}
+
+function renderWord(){
+  var ws=LEVELS[S.spLevel];
+  var w=ws[S.spIdx % ws.length];
+  document.getElementById('sp-em').textContent=w.emoji;
+  document.getElementById('sp-hint').textContent=w.hint;
+  document.getElementById('sp-def').textContent=w.def;
+  document.getElementById('sp-ctr').textContent='Word '+((S.spIdx%ws.length)+1)+' of '+ws.length;
+  document.getElementById('sp-score').textContent='Score: '+S.spScore;
+  document.getElementById('sp-bar').style.width=(((S.spIdx%ws.length)+1)/ws.length*100)+'%';
+  var container=document.getElementById('blanks');
+  container.innerHTML='';
+  for(var i=0;i<w.word.length;i++){
+    var inp=document.createElement('input');
+    inp.type='text'; inp.maxLength=1; inp.className='lbox';
+    inp.setAttribute('autocomplete','off');
+    inp.setAttribute('autocorrect','off');
+    inp.setAttribute('autocapitalize','characters');
+    inp.setAttribute('spellcheck','false');
+    inp.setAttribute('inputmode','text');
+    inp.addEventListener('input',makeInputHandler(inp,w));
+    inp.addEventListener('keydown',makeKeyHandler(inp));
+    container.appendChild(inp);
+  }
+  var fb=document.getElementById('sp-fb');
+  fb.className='fb'; fb.textContent='';
+  renderWordList();
+  setTimeout(function(){var f=container.firstChild; if(f) f.focus();},80);
+}
+
+function makeInputHandler(inp,w){
+  return function(e){
+    var v=e.target.value.replace(/[^a-zA-Z]/g,'').toUpperCase();
+    e.target.value=v;
+    if(v && e.target.nextElementSibling) e.target.nextElementSibling.focus();
+  };
+}
+
+function makeKeyHandler(inp){
+  return function(e){
+    if(e.key==='Backspace' && !e.target.value && e.target.previousElementSibling)
+      e.target.previousElementSibling.focus();
+    if(e.key==='Enter') checkSpell();
+  };
+}
+
+function checkSpell(){
+  var ws=LEVELS[S.spLevel];
+  var w=ws[S.spIdx % ws.length];
+  var boxes=document.querySelectorAll('.lbox');
+  var typed='';
+  for(var i=0;i<boxes.length;i++) typed+=boxes[i].value.toUpperCase();
+  if(typed.length<w.word.length){setFb('Please fill in all the letters! 💬','bad');return;}
+  if(typed===w.word){
+    for(var i=0;i<boxes.length;i++) boxes[i].classList.add('ok');
+    S.spScore++; S.wordsLearned++; S.mastered[w.word]=true;
+    addStars(2);
+    setFb('🎉 "'+w.word+'" is correct! +2 stars!','ok');
+    setTimeout(nextWord,1500);
+  } else {
+    for(var i=0;i<boxes.length;i++){
+      boxes[i].classList.remove('ok','bad');
+      boxes[i].classList.add(boxes[i].value.toUpperCase()===w.word[i]?'ok':'bad');
+    }
+    setFb('❌ Keep trying! The word has '+w.word.length+' letters.','bad');
+  }
+}
+
+function setFb(msg,type){
+  var fb=document.getElementById('sp-fb');
+  fb.className='fb '+type; fb.textContent=msg;
+}
+
+function giveHint(){
+  var ws=LEVELS[S.spLevel],w=ws[S.spIdx%ws.length];
+  var boxes=document.querySelectorAll('.lbox');
+  for(var i=0;i<boxes.length;i++){
+    if(!boxes[i].value){
+      boxes[i].value=w.word[i];
+      if(boxes[i+1]) boxes[i+1].focus();
+      break;
+    }
+  }
+}
+
+function nextWord(){S.spIdx++;renderWord();}
+
+function renderWordList(){
+  var ws=LEVELS[S.spLevel];
+  var html='';
+  for(var i=0;i<ws.length;i++){
+    var done=!!S.mastered[ws[i].word];
+    html+='<div class="wpill'+(done?' done':'')+'">'+( done?'✅ ':'')+ws[i].word+'</div>';
+  }
+  document.getElementById('wlist').innerHTML=html;
+}
+
+/* ── QUIZ ── */
+function pickType(t,el){
+  S.qType=t;
+  var items=document.querySelectorAll('.qti');
+  for(var i=0;i<items.length;i++) items[i].classList.remove('on');
+  el.classList.add('on');
+}
+
+function startQuiz(){
+  // Shuffle pool
+  var pool=QPOOL.slice().sort(function(){return Math.random()-.5});
+  S.qWords=pool.slice(0,10);
+  S.qIdx=0; S.qOk=0; S.qBad=0; S.qWait=false; S.qCorrectIdx=-1;
+  document.getElementById('qz-start').style.display='none';
+  document.getElementById('qz-results').style.display='none';
+  document.getElementById('qz-game').style.display='block';
+  document.getElementById('q-ok').textContent='0';
+  document.getElementById('q-bad').textContent='0';
+  document.getElementById('nbtn').style.display='none';
+  renderQ();
+}
+
+function renderQ(){
+  var w=S.qWords[S.qIdx];
+  document.getElementById('q-cur').textContent=(S.qIdx+1)+'/10';
+  document.getElementById('qz-bar').style.width=((S.qIdx+1)/10*100)+'%';
+  document.getElementById('nbtn').style.display='none';
+  S.qWait=false;
+  var card=document.getElementById('qcard');
+
+  if(S.qType==='fill'){
+    card.innerHTML=
+      '<div class="qnum">Question '+(S.qIdx+1)+' of 10</div>'+
+      '<div class="qtxt">'+w.emoji+'&nbsp; '+w.hint+'</div>'+
+      '<div class="word-df" style="margin-bottom:14px">'+w.def+'</div>'+
+      '<input id="finp" class="finp" type="text" placeholder="Type the word..."'+
+        ' maxlength="12" autocomplete="off" autocorrect="off"'+
+        ' autocapitalize="characters" spellcheck="false" inputmode="text">'+
+      '<div class="ffb" id="ffb"></div>'+
+      '<button class="btn btn-g" onclick="checkFill()">✅ Submit</button>';
+    var finp=document.getElementById('finp');
+    finp.addEventListener('input',function(e){
+      e.target.value=e.target.value.replace(/[^a-zA-Z]/g,'').toUpperCase();
+    });
+    finp.addEventListener('keydown',function(e){if(e.key==='Enter')checkFill();});
+    setTimeout(function(){if(finp)finp.focus();},80);
+
+  } else {
+    // Build shuffled options, store correct index
+    var others=[];
+    for(var i=0;i<QPOOL.length;i++){
+      if(QPOOL[i].word!==w.word) others.push(QPOOL[i]);
+    }
+    others.sort(function(){return Math.random()-.5});
+    var four=others.slice(0,3).concat([w]);
+    four.sort(function(){return Math.random()-.5});
+    S.qCorrectIdx=-1;
+    for(var i=0;i<four.length;i++){
+      if(four[i].word===w.word){S.qCorrectIdx=i;break;}
+    }
+    var isMatch=(S.qType==='match');
+    var qtxt=isMatch
+      ? 'Which word means: <em>"'+w.def+'"</em>?'
+      : w.emoji+'&nbsp; '+w.hint+'<br><small style="color:#aaa;font-size:.78rem">'+w.def+'</small>';
+    var optsHtml='';
+    var letters=['A','B','C','D'];
+    for(var i=0;i<four.length;i++){
+      optsHtml+='<button class="opt" id="opt'+i+'" onclick="checkMC('+i+')">'+
+        '<span class="olbl">'+letters[i]+'</span> '+four[i].word+'</button>';
+    }
+    card.innerHTML=
+      '<div class="qnum">Question '+(S.qIdx+1)+' of 10</div>'+
+      '<div class="qtxt">'+qtxt+'</div>'+
+      '<div class="opts">'+optsHtml+'</div>';
+  }
+}
+
+function checkMC(chosen){
+  if(S.qWait) return;
+  S.qWait=true;
+  var correct=S.qCorrectIdx;
+  var opts=document.querySelectorAll('.opt');
+  for(var i=0;i<opts.length;i++) opts[i].disabled=true;
+  opts[chosen].classList.add(chosen===correct?'ok':'bad');
+  if(chosen!==correct) opts[correct].classList.add('ok');
+  if(chosen===correct){S.qOk++;addStars(1);confetti();}
+  else S.qBad++;
+  document.getElementById('q-ok').textContent=S.qOk;
+  document.getElementById('q-bad').textContent=S.qBad;
+  document.getElementById('nbtn').style.display='inline-flex';
+}
+
+function checkFill(){
+  if(S.qWait) return;
+  var inp=document.getElementById('finp');
+  if(!inp) return;
+  var typed=inp.value.replace(/[^a-zA-Z]/g,'').toUpperCase();
+  var w=S.qWords[S.qIdx];
+  S.qWait=true; inp.disabled=true;
+  var fb=document.getElementById('ffb');
+  if(typed===w.word){
+    fb.innerHTML='<span style="color:var(--mint)">🎉 Correct! "'+w.word+'"</span>';
+    S.qOk++; addStars(1); confetti();
+  } else {
+    fb.innerHTML='<span style="color:var(--rose)">❌ Answer: "'+w.word+'"</span>';
+    S.qBad++;
+  }
+  document.getElementById('q-ok').textContent=S.qOk;
+  document.getElementById('q-bad').textContent=S.qBad;
+  document.getElementById('nbtn').style.display='inline-flex';
+}
+
+function nextQ(){
+  S.qIdx++;
+  if(S.qIdx>=10) showResults();
+  else renderQ();
+}
+
+function showResults(){
+  S.quizzesTaken++;
+  document.getElementById('qz-game').style.display='none';
+  document.getElementById('qz-results').style.display='block';
+  var sc=S.qOk;
+  document.getElementById('res-sc').textContent=sc+'/10';
+  var tr='🥉',ti='Good Try!',mg='Keep practicing!';
+  if(sc>=9){tr='🏆';ti='Outstanding!';mg='You are a word genius!';}
+  else if(sc>=7){tr='🥇';ti='Excellent!';mg='You are a spelling superstar!';}
+  else if(sc>=5){tr='🥈';ti='Well Done!';mg='You are getting better!';}
+  document.getElementById('res-tr').textContent=tr;
+  document.getElementById('res-ti').textContent=ti;
+  document.getElementById('res-mg').textContent=mg;
+  var stars=sc>=9?3:sc>=5?2:1;
+  document.getElementById('res-st').textContent='⭐'.repeat(stars);
+  if(sc>=8){confetti();earnBadge(3);}
+  addStars(sc*2);
+}
+
+/* ── LIBRARY ── */
+function renderBooks(filter){
+  var list=[];
+  for(var i=0;i<BOOKS.length;i++){
+    if(filter==='all'||BOOKS[i].cat===filter) list.push(BOOKS[i]);
+  }
+  var html='';
+  for(var i=0;i<list.length;i++){
+    var b=list[i];
+    html+='<div class="bkcard">'+
+      '<div class="bkcover" style="background:'+b.color+'">'+b.emoji+'</div>'+
+      '<div class="bkinfo">'+
+        '<span class="bklvl '+b.level+'">'+b.lt+'</span>'+
+        '<div class="bktitle">'+b.title+'</div>'+
+        '<div class="bkdesc">'+b.desc+'</div>'+
+        '<button class="bkbtn" onclick="openBook('+b.id+')">📖 Read Now</button>'+
+      '</div></div>';
+  }
+  document.getElementById('bkgrid').innerHTML=html;
+}
+
+function filterBks(cat,btn){
+  var pills=document.querySelectorAll('#lib-pills .pill');
+  for(var i=0;i<pills.length;i++) pills[i].classList.remove('on');
+  btn.classList.add('on');
+  renderBooks(cat);
+}
+
+function openBook(id){
+  var b=null;
+  for(var i=0;i<BOOKS.length;i++){if(BOOKS[i].id===id){b=BOOKS[i];break;}}
+  if(!b) return;
+  document.getElementById('m-lvl').textContent=b.lt+' · '+b.cat;
+  document.getElementById('m-title').textContent=b.title;
+  document.getElementById('m-illo').textContent=b.emoji;
+  document.getElementById('m-story').innerHTML=b.story;
+  var optsHtml='';
+  for(var i=0;i<b.opts.length;i++){
+    optsHtml+='<button class="ropt" id="ro'+i+'" onclick="checkReader('+i+','+b.ans+','+b.id+')">'+b.opts[i]+'</button>';
+  }
+  document.getElementById('m-quiz').innerHTML=
+    '<h4>📝 Reading Check</h4>'+
+    '<div class="m-qtxt">'+b.q+'</div>'+
+    optsHtml+
+    '<div class="rfb" id="rfb"></div>';
+  document.getElementById('modal-bg').classList.add('open');
+  document.body.style.overflow='hidden';
+  if(!S.booksReadSet[id]){
+    S.booksReadSet[id]=true; S.booksRead++;
+    addStars(3); earnBadge(1);
+    if(S.booksRead>=3) earnBadge(4);
+  }
+}
+
+function checkReader(chosen,correct,bid){
+  var opts=document.querySelectorAll('.ropt');
+  for(var i=0;i<opts.length;i++) opts[i].disabled=true;
+  opts[chosen].classList.add(chosen===correct?'ok':'bad');
+  if(chosen!==correct) opts[correct].classList.add('ok');
+  var fb=document.getElementById('rfb');
+  fb.style.display='block';
+  if(chosen===correct){
+    fb.innerHTML='🎉 Great reading! +2 stars!'; fb.style.color='#1a7a50';
+    addStars(2); confetti();
+  } else {
+    var b=null;
+    for(var i=0;i<BOOKS.length;i++){if(BOOKS[i].id===bid){b=BOOKS[i];break;}}
+    fb.innerHTML='❌ Answer: '+(b?b.opts[correct]:''); fb.style.color='#c0384f';
+  }
+}
+
+function closeModal(){
+  document.getElementById('modal-bg').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function onBgClick(e){
+  if(e.target===document.getElementById('modal-bg')) closeModal();
+}
+
+/* ── PROGRESS ── */
+function drawProgress(){
+  document.getElementById('pr-wd').textContent=S.wordsLearned;
+  document.getElementById('pr-qz').textContent=S.quizzesTaken;
+  document.getElementById('pr-bk').textContent=S.booksRead;
+  document.getElementById('pr-st').textContent=S.stars;
+  if(S.stars>0) earnBadge(0);
+  if(S.wordsLearned>=5) earnBadge(2);
+  if(S.wordsLearned>=20) earnBadge(6);
+  if(S.stars>=20) earnBadge(7);
+  var html='';
+  for(var i=0;i<BADGES.length;i++){
+    var b=BADGES[i];
+    html+='<div class="bdg'+(b.on?' on':'')+'">'+
+      '<span class="be">'+b.icon+'</span>'+
+      '<div class="bn">'+b.name+'</div>'+
+      '<div class="bd">'+b.desc+'</div></div>';
+  }
+  document.getElementById('bdggrid').innerHTML=html;
+  var skills=[
+    {n:'Spelling', v:Math.min(S.wordsLearned*3,100), c:'linear-gradient(90deg,var(--sky),var(--mint))'},
+    {n:'Reading',  v:Math.min(S.booksRead*16,100),   c:'linear-gradient(90deg,var(--rose),var(--coral))'},
+    {n:'Quizzing', v:Math.min(S.quizzesTaken*20,100),c:'linear-gradient(90deg,var(--lilac),var(--rose))'},
+    {n:'Stars',    v:Math.min(S.stars*2,100),         c:'linear-gradient(90deg,var(--sun),var(--coral))'}
+  ];
+  var sh='';
+  for(var i=0;i<skills.length;i++){
+    var s=skills[i];
+    sh+='<div class="skrow">'+
+      '<div class="skhd"><span>'+s.n+'</span><span>'+s.v+'%</span></div>'+
+      '<div class="skbg"><div class="skfill" style="background:'+s.c+';width:'+s.v+'%"></div></div>'+
+    '</div>';
+  }
+  document.getElementById('skdiv').innerHTML=sh;
+}
+
+/* ── HELPERS ── */
+function addStars(n){
+  S.stars+=n;
+  document.getElementById('starCount').textContent=S.stars;
+  var b=document.getElementById('star-bdg');
+  b.classList.remove('pop');
+  void b.offsetWidth;
+  b.classList.add('pop');
+}
+
+function earnBadge(i){if(!BADGES[i].on) BADGES[i].on=true;}
+
+function confetti(){
+  var cols=['#F0607A','#5BBDE4','#F5C842','#4DC99A','#A87DE8','#F47C5A'];
+  for(var i=0;i<26;i++){
+    var el=document.createElement('div');
+    el.className='cp';
+    var delay=(Math.random()*.5).toFixed(2);
+    var dur=(1.2+Math.random()*.8).toFixed(2);
+    var w=Math.round(6+Math.random()*8);
+    var h=Math.round(6+Math.random()*8);
+    var br=Math.random()>.5?'50%':'3px';
+    el.style.cssText='left:'+Math.round(Math.random()*100)+'vw;background:'+cols[i%cols.length]+
+      ';animation-delay:'+delay+'s;animation-duration:'+dur+'s;width:'+w+'px;height:'+h+'px;border-radius:'+br;
+    document.body.appendChild(el);
+    setTimeout(function(e){return function(){if(e.parentNode)e.parentNode.removeChild(e);}}(el),2400);
+  }
+}
+
+/* Word of the Day */
+var WOTD=[
+  {e:'🌟',w:'BRAVE',  d:'Strong enough to face your fears'},
+  {e:'🌈',w:'JOYFUL', d:'Feeling very happy and full of joy'},
+  {e:'🌊',w:'GENTLE', d:'Soft and careful in the way you act'},
+  {e:'🦋',w:'CURIOUS',d:'Always wanting to learn new things'},
+  {e:'🌸',w:'KIND',   d:'Being friendly and caring to others'},
+  {e:'🏔️',w:'STRONG', d:'Having lots of power or ability'},
+  {e:'☀️',w:'BRIGHT', d:'Full of light or very clever'}
+];
+var tod=WOTD[new Date().getDay()%WOTD.length];
+document.getElementById('wotd-em').textContent=tod.e;
+document.getElementById('wotd-w').textContent=tod.w;
+document.getElementById('wotd-d').textContent=tod.d;
+
+renderWord();
+</script>
+</body>
+</html>
