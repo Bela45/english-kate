@@ -163,7 +163,6 @@ body{
   background:transparent;font-family:'Baloo 2',cursive;font-weight:800;
   text-align:center;text-transform:uppercase;color:var(--ink);outline:none;
   -webkit-appearance:none;transition:border-color .2s;
-  /* Fix iOS zoom - must be at least 16px */
   font-size:1.8rem;
 }
 @media (max-width:400px){.lbox{width:44px;height:56px}}
@@ -212,7 +211,6 @@ body{
   transition:border-color .2s;
   font-size:1.3rem;
 }
-/* Prevent iOS zoom: input font-size must be >= 16px */
 @media (max-width:767px){.finp{font-size:16px;letter-spacing:2px}}
 .finp:focus{border-color:var(--lilac)}
 .ffb{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;text-align:center;min-height:26px;margin-bottom:10px}
@@ -239,6 +237,58 @@ body{
 .bkdesc{font-size:.7rem;font-weight:700;color:#aaa;line-height:1.35;margin-bottom:9px}
 .bkbtn{display:block;width:100%;padding:8px;border:none;border-radius:9px;cursor:pointer;background:linear-gradient(135deg,var(--rose),var(--lilac));color:#fff;font-family:'Baloo 2',cursive;font-size:.8rem;font-weight:700}
 
+/* ── CLICKABLE WORDS IN STORY ── */
+.sw{
+  display:inline;
+  cursor:pointer;
+  border-radius:4px;
+  padding:0 1px;
+  transition:background .15s, color .15s;
+  -webkit-tap-highlight-color:transparent;
+  position:relative;
+}
+.sw:hover{background:rgba(91,189,228,.18);color:var(--sky)}
+.sw.speaking{
+  background:linear-gradient(135deg,rgba(168,125,232,.25),rgba(91,189,228,.25));
+  color:var(--lilac);
+  animation:speakPulse .5s ease-in-out infinite alternate;
+}
+@keyframes speakPulse{from{opacity:.7}to{opacity:1}}
+
+/* Sound tip banner */
+.sound-tip{
+  display:flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,#f4efff,#e8f8ff);
+  border:1.5px solid rgba(168,125,232,.25);
+  border-radius:12px;padding:10px 14px;margin-bottom:14px;
+  font-size:.82rem;font-weight:700;color:var(--muted);
+}
+.sound-tip .ti{font-size:1.3rem;flex-shrink:0;animation:mascot 2s infinite}
+
+/* Vocab highlight style */
+.vocab{
+  background:linear-gradient(135deg,#fff0c0,#ffd8e0);
+  border-radius:5px;padding:1px 5px;font-weight:900;
+  cursor:pointer;border-bottom:2px dotted var(--coral);
+  -webkit-tap-highlight-color:transparent;
+  transition:background .15s;
+}
+.vocab:hover,.vocab.speaking{background:linear-gradient(135deg,#f5c842,#f47c5a);color:#fff}
+
+/* Read aloud button */
+.read-aloud-btn{
+  display:flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,var(--lilac),var(--sky));
+  color:#fff;border:none;border-radius:50px;
+  padding:10px 18px;font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:700;
+  cursor:pointer;margin-bottom:16px;width:100%;justify-content:center;
+  box-shadow:0 4px 14px rgba(168,125,232,.3);
+  transition:transform .15s,filter .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.read-aloud-btn:active{transform:scale(.96)}
+.read-aloud-btn.reading{background:linear-gradient(135deg,var(--rose),var(--coral))}
+
 /* MODAL */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(30,24,64,.58);z-index:200;align-items:flex-end;justify-content:center;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 .modal-bg.open{display:flex;animation:bgFade .25s}
@@ -252,10 +302,9 @@ body{
 .m-close{width:34px;height:34px;border-radius:50%;border:none;background:#f0e8ff;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-tap-highlight-color:transparent}
 .m-body{padding:18px 18px 28px}
 .m-illo{font-size:5rem;text-align:center;margin-bottom:14px}
-.stxt{font-size:1rem;line-height:1.85;color:#3a3a5a;font-weight:700}
-.stxt p{margin-bottom:11px}
+.stxt{font-size:1rem;line-height:1.95;color:#3a3a5a;font-weight:700}
+.stxt p{margin-bottom:14px}
 .stxt strong{color:var(--rose);font-weight:900}
-.vocab{background:linear-gradient(135deg,#fff0c0,#ffd8e0);border-radius:5px;padding:1px 5px;font-weight:900;cursor:help;border-bottom:2px dotted var(--coral)}
 .m-quiz{margin-top:20px;padding-top:18px;border-top:2px dashed #eae6f0}
 .m-quiz h4{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:700;margin-bottom:10px}
 .m-qtxt{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:10px;line-height:1.5}
@@ -487,14 +536,208 @@ body{
       <button class="m-close" onclick="closeModal()">✕</button>
     </div>
     <div class="m-body">
-      <div class="m-illo"  id="m-illo">🐰</div>
-      <div class="stxt"    id="m-story"></div>
-      <div class="m-quiz"  id="m-quiz"></div>
+      <div class="m-illo" id="m-illo">🐰</div>
+
+      <!-- Read Aloud button -->
+      <button class="read-aloud-btn" id="read-aloud-btn" onclick="toggleReadAloud()">
+        🔊 Read Story Aloud
+      </button>
+
+      <!-- Tip banner -->
+      <div class="sound-tip">
+        <span class="ti">👆</span>
+        <span>Tap <strong>any word</strong> in the story to hear how it sounds!</span>
+      </div>
+
+      <div class="stxt" id="m-story"></div>
+      <div class="m-quiz" id="m-quiz"></div>
     </div>
   </div>
 </div>
 
 <script>
+/* ── SPEECH ── */
+var synth = window.speechSynthesis;
+var currentSpeakEl = null;
+var readingAloud = false;
+var readAloudUtterance = null;
+var femaleVoice = null;
+
+/* Pick the best female English voice available on this device */
+function loadFemaleVoice() {
+  var voices = synth.getVoices();
+  if (!voices.length) return;
+
+  /* Priority list — common female voice names across platforms */
+  var prefer = [
+    'Samantha','Karen','Moira','Tessa','Fiona',       /* macOS / iOS */
+    'Microsoft Zira','Microsoft Eva','Microsoft Hazel',/* Windows */
+    'Google US English','Google UK English Female',    /* Android / Chrome */
+    'en-US-Standard-C','en-US-Wavenet-C',              /* Google Cloud TTS */
+  ];
+
+  /* Try preferred names first */
+  for (var p = 0; p < prefer.length; p++) {
+    for (var v = 0; v < voices.length; v++) {
+      if (voices[v].name.indexOf(prefer[p]) !== -1) {
+        femaleVoice = voices[v]; return;
+      }
+    }
+  }
+
+  /* Fallback: any English voice whose name suggests female */
+  var femaleHints = ['female','woman','girl','zira','eva','hazel','samantha',
+                     'karen','moira','tessa','fiona','victoria','allison','ava',
+                     'susan','kate','lisa','emily','olivia'];
+  for (var v = 0; v < voices.length; v++) {
+    var n = voices[v].name.toLowerCase();
+    for (var h = 0; h < femaleHints.length; h++) {
+      if (n.indexOf(femaleHints[h]) !== -1) {
+        femaleVoice = voices[v]; return;
+      }
+    }
+  }
+
+  /* Last resort: pick any en-US voice */
+  for (var v = 0; v < voices.length; v++) {
+    if (voices[v].lang === 'en-US' || voices[v].lang === 'en_US') {
+      femaleVoice = voices[v]; return;
+    }
+  }
+}
+
+/* Voices load asynchronously on some browsers */
+if (synth.onvoiceschanged !== undefined) {
+  synth.onvoiceschanged = loadFemaleVoice;
+}
+/* Also try immediately (Chrome desktop has them right away) */
+loadFemaleVoice();
+
+function makeUtterance(text) {
+  /* Reload voice list each time in case it wasn't ready earlier */
+  if (!femaleVoice) loadFemaleVoice();
+  var utter = new SpeechSynthesisUtterance(text);
+  utter.lang  = 'en-US';
+  utter.rate  = 0.85;
+  utter.pitch = 1.15;   /* slightly higher = more feminine feel */
+  if (femaleVoice) utter.voice = femaleVoice;
+  return utter;
+}
+
+function speak(word, el) {
+  if (!synth) return;
+  synth.cancel();
+  if (currentSpeakEl) {
+    currentSpeakEl.classList.remove('speaking');
+    currentSpeakEl = null;
+  }
+  var utter = makeUtterance(word);
+  if (el) {
+    currentSpeakEl = el;
+    el.classList.add('speaking');
+    utter.onend = function() {
+      el.classList.remove('speaking');
+      if (currentSpeakEl === el) currentSpeakEl = null;
+    };
+    utter.onerror = function() {
+      el.classList.remove('speaking');
+      if (currentSpeakEl === el) currentSpeakEl = null;
+    };
+  }
+  synth.speak(utter);
+}
+
+/* Wrap every word in <span class="sw"> inside a text node,
+   preserving existing HTML elements like <strong>, <span class="vocab">, etc. */
+function wrapWordsInNode(node) {
+  if (node.nodeType === 3) {
+    // Text node — wrap each word
+    var text = node.nodeValue;
+    // Split keeping spaces and punctuation attached to words
+    var parts = text.split(/(\s+)/);
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < parts.length; i++) {
+      var part = parts[i];
+      if (/\S/.test(part)) {
+        // Extract core word (letters only) for speech
+        var coreWord = part.replace(/[^a-zA-Z']/g, '');
+        if (coreWord.length > 0) {
+          var sp = document.createElement('span');
+          sp.className = 'sw';
+          sp.textContent = part;
+          sp.title = 'Tap to hear: ' + coreWord;
+          sp.setAttribute('data-word', coreWord);
+          sp.onclick = (function(w, el) {
+            return function(e) { e.stopPropagation(); speak(w, el); };
+          })(coreWord, sp);
+          frag.appendChild(sp);
+        } else {
+          frag.appendChild(document.createTextNode(part));
+        }
+      } else {
+        frag.appendChild(document.createTextNode(part));
+      }
+    }
+    node.parentNode.replaceChild(frag, node);
+  } else if (node.nodeType === 1) {
+    // Element node
+    // Skip if it's already a .sw or .vocab clickable span
+    if (node.classList && node.classList.contains('vocab')) {
+      // Make vocab words also speakable
+      var vocabWord = node.textContent.replace(/[^a-zA-Z']/g, '');
+      node.title = 'Tap to hear: ' + vocabWord;
+      node.onclick = (function(w, el) {
+        return function(e) { e.stopPropagation(); speak(w, el); };
+      })(vocabWord, node);
+      return;
+    }
+    // Recursively wrap child nodes (clone list to avoid live iteration issues)
+    var children = Array.prototype.slice.call(node.childNodes);
+    for (var j = 0; j < children.length; j++) {
+      wrapWordsInNode(children[j]);
+    }
+  }
+}
+
+function wrapStoryWords() {
+  var storyDiv = document.getElementById('m-story');
+  if (!storyDiv) return;
+  wrapWordsInNode(storyDiv);
+}
+
+/* Read aloud full story */
+function toggleReadAloud() {
+  var btn = document.getElementById('read-aloud-btn');
+  if (readingAloud) {
+    synth.cancel();
+    readingAloud = false;
+    btn.textContent = '🔊 Read Story Aloud';
+    btn.classList.remove('reading');
+    return;
+  }
+  // Get plain text of story
+  var storyDiv = document.getElementById('m-story');
+  if (!storyDiv) return;
+  var text = storyDiv.innerText || storyDiv.textContent;
+  readAloudUtterance = makeUtterance(text);
+  readAloudUtterance.rate = 0.82;
+  readAloudUtterance.onend = function() {
+    readingAloud = false;
+    btn.textContent = '🔊 Read Story Aloud';
+    btn.classList.remove('reading');
+  };
+  readAloudUtterance.onerror = function() {
+    readingAloud = false;
+    btn.textContent = '🔊 Read Story Aloud';
+    btn.classList.remove('reading');
+  };
+  synth.cancel();
+  synth.speak(readAloudUtterance);
+  readingAloud = true;
+  btn.textContent = '⏹ Stop Reading';
+  btn.classList.add('reading');
+}
+
 /* ── DATA ── */
 var LEVELS=[
  [{word:"CAT",emoji:"🐱",hint:"This animal says meow",def:"A small furry pet"},
@@ -705,7 +948,6 @@ function pickType(t,el){
 }
 
 function startQuiz(){
-  // Shuffle pool
   var pool=QPOOL.slice().sort(function(){return Math.random()-.5});
   S.qWords=pool.slice(0,10);
   S.qIdx=0; S.qOk=0; S.qBad=0; S.qWait=false; S.qCorrectIdx=-1;
@@ -744,7 +986,6 @@ function renderQ(){
     setTimeout(function(){if(finp)finp.focus();},80);
 
   } else {
-    // Build shuffled options, store correct index
     var others=[];
     for(var i=0;i<QPOOL.length;i++){
       if(QPOOL[i].word!==w.word) others.push(QPOOL[i]);
@@ -865,10 +1106,21 @@ function openBook(id){
   var b=null;
   for(var i=0;i<BOOKS.length;i++){if(BOOKS[i].id===id){b=BOOKS[i];break;}}
   if(!b) return;
+
+  // Stop any existing reading
+  if(synth) synth.cancel();
+  readingAloud = false;
+  var btn = document.getElementById('read-aloud-btn');
+  if(btn){ btn.textContent='🔊 Read Story Aloud'; btn.classList.remove('reading'); }
+
   document.getElementById('m-lvl').textContent=b.lt+' · '+b.cat;
   document.getElementById('m-title').textContent=b.title;
   document.getElementById('m-illo').textContent=b.emoji;
   document.getElementById('m-story').innerHTML=b.story;
+
+  // Wrap every story word in clickable spans
+  setTimeout(wrapStoryWords, 50);
+
   var optsHtml='';
   for(var i=0;i<b.opts.length;i++){
     optsHtml+='<button class="ropt" id="ro'+i+'" onclick="checkReader('+i+','+b.ans+','+b.id+')">'+b.opts[i]+'</button>';
@@ -905,6 +1157,10 @@ function checkReader(chosen,correct,bid){
 }
 
 function closeModal(){
+  if(synth) synth.cancel();
+  readingAloud = false;
+  var btn = document.getElementById('read-aloud-btn');
+  if(btn){ btn.textContent='🔊 Read Story Aloud'; btn.classList.remove('reading'); }
   document.getElementById('modal-bg').classList.remove('open');
   document.body.style.overflow='';
 }
