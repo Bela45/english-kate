@@ -500,6 +500,9 @@ body{
     <button class="pill"    onclick="filterBks('adventure',this)">🌟 Adventure</button>
     <button class="pill"    onclick="filterBks('nature',this)">🌿 Nature</button>
     <button class="pill"    onclick="filterBks('friendship',this)">💛 Friendship</button>
+    <button class="pill"    onclick="filterBks('L1',this)">⭐ Level 1</button>
+    <button class="pill"    onclick="filterBks('L2',this)">⭐⭐ Level 2</button>
+    <button class="pill"    onclick="filterBks('L3',this)">⭐⭐⭐ Level 3</button>
   </div>
   <div class="bkgrid" id="bkgrid"></div>
 </div>
@@ -773,6 +776,7 @@ var LEVELS=[
 ];
 
 var BOOKS=[
+ /* ── ORIGINAL 6 ── */
  {id:1,title:"Benny the Bunny",emoji:"🐰",color:"#FFE5F3",level:"L1",lt:"Level 1",cat:"animals",desc:"A little bunny learns to be brave.",
   story:"<p>Benny was a small white bunny. He lived in a cozy burrow under a big oak tree.</p><p>One morning, Benny woke up and smelled something sweet. It was a patch of <span class='vocab'>flowers</span> growing far away.</p><p>\"I want to see the flowers!\" said Benny. But the path was long and scary.</p><p>Benny took a deep breath. He hopped one step, then two, then three! Soon he was standing in the flowers.</p><p><strong>\"I did it!\"</strong> cheered Benny. He felt so proud and happy.</p><p>Every brave step is worth it. 🌸</p>",
   q:"Why was Benny scared at first?",opts:["The flowers smelled bad","The path was long and scary","He forgot where he lived","The flowers were too small"],ans:1},
@@ -790,7 +794,59 @@ var BOOKS=[
   q:"What did the seed grow into?",opts:["A tree","A sunflower","A rose","A vegetable"],ans:1},
  {id:6,title:"Captain Coral",emoji:"🐠",color:"#E5F8FF",level:"L3",lt:"Level 3",cat:"adventure",desc:"A brave fish guards the ocean reef.",
   story:"<p>Deep below the sparkling sea, Captain Coral was the bravest clownfish in the ocean.</p><p>One day, a hungry barracuda circled the <span class='vocab'>reef</span>.</p><p>Captain Coral felt <strong>fear</strong>, but she remembered her family. Courage means acting despite fear.</p><p>She darted forward, zigzagging until the barracuda swam away.</p><p>The whole reef cheered! \"Captain Coral!\"</p><p>True courage means protecting those you love. 🌊</p>",
-  q:"What does 'courage' mean in this story?",opts:["Being the fastest swimmer","Acting bravely despite fear","Never feeling scared","Always winning"],ans:1}
+  q:"What does 'courage' mean in this story?",opts:["Being the fastest swimmer","Acting bravely despite fear","Never feeling scared","Always winning"],ans:1},
+
+ /* ── NEW STORIES ── */
+
+ /* ANIMALS - L1 */
+ {id:7,title:"Daisy the Duck",emoji:"🦆",color:"#FFF9D6",level:"L1",lt:"Level 1",cat:"animals",desc:"A little duck finds her very own pond.",
+  story:"<p>Daisy was a small yellow duck. She lived near a big river with her family.</p><p>One day, Daisy found a quiet little <span class='vocab'>pond</span> behind some tall reeds.</p><p>\"This is perfect!\" she said. The water was still and <strong>sparkling</strong> like a mirror.</p><p>Daisy swam in circles. She splashed and dipped her head. The cool water made her happy.</p><p>At sunset, she waddled home and told her family. The next day, they all swam to the new pond together.</p><p>Good things are even better when shared. 🌅</p>",
+  q:"What did Daisy find behind the reeds?",opts:["A river","A pond","A waterfall","A puddle"],ans:1},
+
+ /* ANIMALS - L2 */
+ {id:8,title:"Stripe the Zebra",emoji:"🦓",color:"#F0F0FF",level:"L2",lt:"Level 2",cat:"animals",desc:"Stripe learns that being different is a gift.",
+  story:"<p>Stripe was a young zebra who did not like his black and white stripes. \"Why can't I be golden like the lions?\" he asked.</p><p>One afternoon, a storm rolled across the <span class='vocab'>savanna</span>. Stripe hid in the tall grass.</p><p>The lions could not hide — their golden fur was easy to see. But Stripe's stripes <strong>blended</strong> perfectly with the shadows.</p><p>\"Your stripes kept you safe,\" his mother said proudly.</p><p>Stripe looked at his reflection in the watering hole and smiled wide.</p><p>What makes you different makes you special. 🦓</p>",
+  q:"How did Stripe's stripes help him?",opts:["They scared the lions away","They helped him hide in the grass","They made him run faster","They kept him warm"],ans:1},
+
+ /* NATURE - L2 */
+ {id:9,title:"The Old Mango Tree",emoji:"🥭",color:"#FFF3E0",level:"L2",lt:"Level 2",cat:"nature",desc:"A wise old tree gives the best gift of all.",
+  story:"<p>In the middle of the village stood a tall, old mango tree. Every summer it gave sweet golden <span class='vocab'>fruit</span> to everyone.</p><p>One dry season, no rain came. The tree's leaves turned yellow.</p><p>\"Will you be okay?\" asked little Rosa.</p><p>\"I am <strong>resting</strong>,\" the tree whispered. \"The rain will return.\"</p><p>Rosa watered the roots every evening with a small bucket. Slowly, green buds appeared.</p><p>When summer came, the tree gave more mangoes than ever before.</p><p>A little care can save something wonderful. 🌿</p>",
+  q:"Why did the mango tree's leaves turn yellow?",opts:["It was too old","No rain came that season","Rosa forgot to water it","It was the wrong season"],ans:1},
+
+ /* FRIENDSHIP - L1 */
+ {id:10,title:"Two Little Stars",emoji:"⭐",color:"#FFFBE6",level:"L1",lt:"Level 1",cat:"friendship",desc:"Two stars learn that friends shine brighter together.",
+  story:"<p>High up in the night sky lived two little stars named Luma and Finn.</p><p>Luma shone <span class='vocab'>bright</span> yellow. Finn glowed soft blue. They were very different.</p><p>\"Let's race to the moon!\" said Finn one night. But the sky was wide and dark.</p><p>\"I'm scared,\" said Luma quietly.</p><p>Finn moved close. Together, their light made a <strong>beautiful glow</strong> — brighter than either of them alone.</p><p>They crossed the sky together, laughing all the way.</p><p>Friends make every journey shine. ✨</p>",
+  q:"What happened when Luma and Finn shone together?",opts:["They got lost","Their light became brighter","They fell from the sky","They went to sleep"],ans:1},
+
+ /* FRIENDSHIP - L3 */
+ {id:11,title:"The Letter Across the Sea",emoji:"✉️",color:"#E8F5FF",level:"L3",lt:"Level 3",cat:"friendship",desc:"A girl and a pen pal discover the power of words.",
+  story:"<p>Sofia lived in a small town by the sea. One afternoon, she found a glass bottle washed up on the beach. Inside was a <span class='vocab'>letter</span> from a girl named Amara, who lived far across the ocean.</p><p>Sofia wrote back right away. She described her town — the salt smell of the sea, the bright fishing boats, the noisy market on Saturdays.</p><p>Amara replied with <strong>vivid descriptions</strong> of her own home — red dust roads, drumbeats in the evening, and stars that filled the whole sky.</p><p>For two years the letters traveled back and forth, each one a little adventure.</p><p>\"Words can cross any ocean,\" Sofia thought, as she sealed her next letter with a smile.</p><p>A true friendship needs no borders. 🌍</p>",
+  q:"How did Sofia and Amara become friends?",opts:["They met at school","They were neighbours","They exchanged letters across the ocean","They spoke on the phone"],ans:2},
+
+ /* ADVENTURE - L1 */
+ {id:12,title:"Ruby's Red Balloon",emoji:"🎈",color:"#FFE8EC",level:"L1",lt:"Level 1",cat:"adventure",desc:"Ruby chases her balloon on a wonderful journey.",
+  story:"<p>Ruby had a big red <span class='vocab'>balloon</span>. She loved it more than anything.</p><p>One windy day, the string slipped from her hand. The balloon floated up, up, up!</p><p>Ruby ran after it — past the bakery, past the park, past the old <strong>bridge</strong>.</p><p>At last the balloon drifted down into a garden full of roses.</p><p>An old lady picked it up and smiled. \"Is this yours, dear?\"</p><p>She gave Ruby the balloon and a warm cookie too.</p><p>Sometimes getting lost leads you somewhere lovely. 🌹</p>",
+  q:"Where did Ruby's balloon finally land?",opts:["On a roof","In a garden of roses","In the park","In a tree"],ans:1},
+
+ /* ADVENTURE - L3 */
+ {id:13,title:"The Mountain of Echoes",emoji:"🏔️",color:"#EEF4FF",level:"L3",lt:"Level 3",cat:"adventure",desc:"A girl climbs a mountain and discovers something magical.",
+  story:"<p>Everyone in the valley said that the Mountain of Echoes was <span class='vocab'>enchanted</span>. They said if you called out your deepest wish, the mountain would answer.</p><p>Twelve-year-old Nadia decided to find out for herself. She packed her bag and began to climb at dawn.</p><p>The path was steep and rocky. Her legs ached and the cold wind stung her cheeks. More than once she thought about turning back.</p><p>But she kept climbing.</p><p>At the summit, Nadia cupped her hands and shouted, <strong>\"I wish to be brave!\"</strong></p><p>The mountain sent her words back: <em>\"I wish to be brave... brave... brave.\"</em></p><p>Nadia laughed. She had already answered her own wish. The climb itself had made her brave.</p><p>Courage is not a gift — it is something you build, one step at a time. 🏔️</p>",
+  q:"What did Nadia discover at the top of the mountain?",opts:["A hidden village","That she had already become brave","A magical treasure","A friendly giant"],ans:1},
+
+ /* NATURE - L3 */
+ {id:14,title:"The River's Secret",emoji:"🌊",color:"#E0FFF8",level:"L3",lt:"Level 3",cat:"nature",desc:"A curious girl discovers why a river runs dry.",
+  story:"<p>Every year the Silver River ran cold and clear through the village. But this year, it was barely a <span class='vocab'>trickle</span>.</p><p>Ten-year-old Mara decided to follow it upstream to find out why.</p><p>She walked for hours through the forest until she found the answer. A family of beavers had built a great <strong>dam</strong> that blocked the water.</p><p>\"They need it too,\" Mara thought. She did not want to destroy their home.</p><p>Instead, she dug a small channel around the dam with a stick. Slowly, water began to flow again — just enough for the village and the beavers to share.</p><p>\"Nature works best when we work with it,\" her grandmother said that evening.</p><p>The wisest solutions help everyone. 🦫</p>",
+  q:"What had blocked the Silver River?",opts:["A fallen tree","A beaver dam","A pile of rocks","Heavy mud"],ans:1},
+
+ /* ANIMALS - L3 */
+ {id:15,title:"Grandmother Tortoise",emoji:"🐢",color:"#EAFFF0",level:"L3",lt:"Level 3",cat:"animals",desc:"The oldest tortoise in the forest shares ancient wisdom.",
+  story:"<p>Everyone in the forest came to Grandmother Tortoise when they had a problem. She was one hundred years old and had seen many things.</p><p>One day, a young rabbit came to her, panting. \"Grandmother, I am always in a <span class='vocab'>hurry</span> and I keep making mistakes!\"</p><p>Grandmother Tortoise said nothing for a long moment. She looked up at the sky, then at the rabbit.</p><p>\"Tell me,\" she said slowly, \"have you ever watched a sunrise?\"</p><p>\"No,\" said the rabbit. \"There is never time!\"</p><p><strong>\"Make time,\"</strong> said the tortoise. \"The sunrise does not hurry. The river does not hurry. Yet they always arrive.\"</p><p>The rabbit sat down beside her. Together they watched the golden light spread slowly across the forest floor.</p><p>The rabbit did not feel rushed anymore.</p><p>Slow down, and you will see more clearly. 🌄</p>",
+  q:"What lesson did Grandmother Tortoise teach the rabbit?",opts:["How to run faster","To slow down and be patient","To wake up early","To watch animals"],ans:1},
+
+ /* FRIENDSHIP - L2 */
+ {id:16,title:"The Painting on the Wall",emoji:"🎨",color:"#FFF0FB",level:"L2",lt:"Level 2",cat:"friendship",desc:"Two rivals discover they make a better team.",
+  story:"<p>Kai and Priya were both the best <span class='vocab'>painters</span> in their class. But they never spoke — each one thought the other was too proud.</p><p>One day, the teacher gave them one single canvas to share.</p><p>\"One painting. Together,\" she said.</p><p>At first, they argued. Kai wanted blue skies. Priya wanted green forests.</p><p>Then Priya had an idea. She painted a tall forest in the bottom. Kai painted a wide blue sky above it. In the middle, where the colours met, something <strong>magical</strong> happened — a shimmer of teal where sky kissed leaves.</p><p>\"Wow,\" they both said at the same time, and then laughed.</p><p>Their painting won first prize at the school fair.</p><p>The best things in life are made together. 🖼️</p>",
+  q:"What happened where Kai's and Priya's colours met?",opts:["The paint dried badly","A beautiful teal colour appeared","The canvas tore","Nothing happened"],ans:1}
 ];
 
 var QPOOL=[].concat(LEVELS[0].slice(0,4),LEVELS[1].slice(0,3),LEVELS[2].slice(0,3));
