@@ -223,6 +223,38 @@ body{
 .res-mg{font-size:.88rem;font-weight:700;color:var(--muted);margin-bottom:20px}
 .res-bts{display:flex;flex-direction:column;gap:9px}
 
+/* ── BALLOON GAME ── */
+.g-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:6px}
+.g-score{font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:800;color:var(--lilac);background:#f4efff;padding:5px 14px;border-radius:50px}
+.g-remain{font-size:.78rem;font-weight:800;color:var(--coral)}
+.g-clue{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px}
+.g-clue-em{font-size:3.4rem;line-height:1;animation:mascot 2.5s ease-in-out infinite}
+.g-sound{width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;flex-shrink:0;
+  background:linear-gradient(135deg,var(--coral),var(--rose));color:#fff;font-size:1.3rem;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(240,96,122,.35);
+  -webkit-tap-highlight-color:transparent;transition:transform .15s}
+.g-sound:active{transform:scale(.9)}
+.g-dashes{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.g-dash{min-width:26px;height:32px;border-bottom:4px solid var(--ink);display:flex;align-items:center;
+  justify-content:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:1.3rem;color:var(--mint)}
+.balloon-area{position:relative;height:320px;border-radius:var(--r-md);overflow:hidden;margin-bottom:14px;
+  background:linear-gradient(180deg,#eaf7ff 0%,#fdf7ff 60%,#ffffff 100%);box-shadow:inset 0 2px 10px rgba(30,24,64,.06)}
+.balloon{position:absolute;bottom:-90px;width:60px;height:74px;border-radius:50% 50% 50% 50%/56% 56% 44% 44%;
+  display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',cursive;font-weight:800;
+  font-size:1.5rem;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  box-shadow:0 6px 14px rgba(0,0,0,.18),inset -6px -8px 14px rgba(0,0,0,.12),inset 6px 6px 10px rgba(255,255,255,.35);
+  animation-name:balloonUp;animation-timing-function:linear;animation-iteration-count:1;}
+.balloon::after{content:'';position:absolute;bottom:-16px;left:50%;width:2px;height:16px;background:rgba(30,24,64,.3);transform:translateX(-50%)}
+.balloon.popping{animation-play-state:paused!important;transform:scale(1.5);opacity:0;transition:transform .25s,opacity .25s}
+.balloon.missing{animation-play-state:paused!important;background:var(--rose)!important;animation:shake .3s}
+@keyframes balloonUp{from{transform:translateY(0)}to{transform:translateY(-410px)}}
+.g-dotsrow{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.g-dot{width:14px;height:14px;border-radius:50%;background:#e0e0ee;flex-shrink:0}
+.g-dot.done{background:var(--mint)}
+.g-dot.cur{background:var(--rose);transform:scale(1.25)}
+.g-letter-dots .g-dot{width:10px;height:10px}
+.g-controls{margin-top:6px}
+
 /* ── LIBRARY ── */
 .bkgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .bkcard{background:#fff;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh);cursor:pointer;transition:transform .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent}
@@ -385,6 +417,7 @@ body{
   <button class="nb on" onclick="go('home')"     data-p="home">    <span class="ni">🏠</span><span class="nl">Home</span></button>
   <button class="nb"    onclick="go('spelling')" data-p="spelling"><span class="ni">✏️</span><span class="nl">Spelling</span></button>
   <button class="nb"    onclick="go('quiz')"     data-p="quiz">    <span class="ni">🎯</span><span class="nl">Quiz</span></button>
+  <button class="nb"    onclick="go('game')"     data-p="game">    <span class="ni">🎈</span><span class="nl">Game</span></button>
   <button class="nb"    onclick="go('library')"  data-p="library"> <span class="ni">📖</span><span class="nl">Library</span></button>
   <button class="nb"    onclick="go('progress')" data-p="progress"><span class="ni">🏆</span><span class="nl">Progress</span></button>
 </nav>
@@ -486,6 +519,47 @@ body{
         <button class="btn btn-g" onclick="startQuiz()">🔄 Play Again</button>
         <button class="btn btn-p" onclick="go('library')">📖 Read a Story</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- BALLOON WORD GAME -->
+<div id="pg-game" class="pg">
+  <div class="ptitle">🎈 Balloon Pop Spelling</div>
+  <div class="psub">Pop the balloons in order to spell the word!</div>
+
+  <div class="card" id="g-playcard" style="padding:16px">
+    <div class="g-topbar">
+      <span class="g-score" id="g-score">Score: 0%</span>
+      <span class="g-remain" id="g-remain">10 items remaining</span>
+    </div>
+
+    <div class="g-clue">
+      <span class="g-clue-em" id="g-clue-em">🕷️</span>
+      <button class="g-sound" id="g-sound" onclick="gameSpeakWord()">🔊</button>
+    </div>
+
+    <div class="g-dashes" id="g-dashes"></div>
+
+    <div class="balloon-area" id="balloon-area"></div>
+
+    <div class="g-dotsrow" id="g-word-dots"></div>
+    <div class="g-dotsrow g-letter-dots" id="g-letter-dots"></div>
+
+    <div class="g-controls">
+      <button class="btn btn-o" onclick="skipGameWord()">⏭ Skip Word</button>
+    </div>
+    <div class="fb" id="g-fb"></div>
+  </div>
+
+  <div class="card" id="g-results" style="display:none;text-align:center">
+    <span class="trophy" style="font-size:3.6rem;display:block;margin-bottom:8px">🏆</span>
+    <div class="ptitle" style="justify-content:center" id="g-res-title">Round Complete!</div>
+    <div class="res-sc" id="g-res-sc" style="margin:6px 0">0%</div>
+    <p class="res-mg" id="g-res-mg">Great job popping those balloons!</p>
+    <div class="res-bts">
+      <button class="btn btn-g" onclick="startGame()">🔄 Play Again</button>
+      <button class="btn btn-p" onclick="go('quiz')">🎯 Take a Quiz</button>
     </div>
   </div>
 </div>
@@ -869,6 +943,192 @@ var S={
   qType:'mc',qIdx:0,qOk:0,qBad:0,qWords:[],qWait:false,qCorrectIdx:-1
 };
 
+/* ── BALLOON POP GAME — 100+ WORD BANK ── */
+var GWORDS=[
+ {word:"CAT",emoji:"🐱"},{word:"DOG",emoji:"🐶"},{word:"SUN",emoji:"☀️"},{word:"MOON",emoji:"🌙"},
+ {word:"STAR",emoji:"⭐"},{word:"FISH",emoji:"🐟"},{word:"BIRD",emoji:"🐦"},{word:"FROG",emoji:"🐸"},
+ {word:"BEAR",emoji:"🐻"},{word:"LION",emoji:"🦁"},{word:"DUCK",emoji:"🦆"},{word:"COW",emoji:"🐮"},
+ {word:"PIG",emoji:"🐷"},{word:"HORSE",emoji:"🐴"},{word:"SHEEP",emoji:"🐑"},{word:"GOAT",emoji:"🐐"},
+ {word:"BEE",emoji:"🐝"},{word:"ANT",emoji:"🐜"},{word:"SPIDER",emoji:"🕷️"},{word:"SNAKE",emoji:"🐍"},
+ {word:"OWL",emoji:"🦉"},{word:"FOX",emoji:"🦊"},{word:"WOLF",emoji:"🐺"},{word:"DEER",emoji:"🦌"},
+ {word:"MOUSE",emoji:"🐭"},{word:"RABBIT",emoji:"🐰"},{word:"TURTLE",emoji:"🐢"},{word:"WHALE",emoji:"🐳"},
+ {word:"SHARK",emoji:"🦈"},{word:"CRAB",emoji:"🦀"},{word:"APPLE",emoji:"🍎"},{word:"BANANA",emoji:"🍌"},
+ {word:"GRAPE",emoji:"🍇"},{word:"LEMON",emoji:"🍋"},{word:"ORANGE",emoji:"🍊"},{word:"MANGO",emoji:"🥭"},
+ {word:"PEACH",emoji:"🍑"},{word:"CHERRY",emoji:"🍒"},{word:"MELON",emoji:"🍈"},{word:"BREAD",emoji:"🍞"},
+ {word:"CHEESE",emoji:"🧀"},{word:"EGG",emoji:"🥚"},{word:"MILK",emoji:"🥛"},{word:"CAKE",emoji:"🎂"},
+ {word:"COOKIE",emoji:"🍪"},{word:"PIZZA",emoji:"🍕"},{word:"BURGER",emoji:"🍔"},{word:"RICE",emoji:"🍚"},
+ {word:"SOUP",emoji:"🍲"},{word:"CANDY",emoji:"🍬"},{word:"HOUSE",emoji:"🏠"},{word:"SCHOOL",emoji:"🏫"},
+ {word:"CHAIR",emoji:"🪑"},{word:"TABLE",emoji:"🛋️"},{word:"BED",emoji:"🛏️"},{word:"DOOR",emoji:"🚪"},
+ {word:"WINDOW",emoji:"🪟"},{word:"BOOK",emoji:"📚"},{word:"PENCIL",emoji:"✏️"},{word:"CRAYON",emoji:"🖍️"},
+ {word:"SCISSORS",emoji:"✂️"},{word:"CLOCK",emoji:"🕐"},{word:"PHONE",emoji:"📱"},{word:"COMPUTER",emoji:"💻"},
+ {word:"CAMERA",emoji:"📷"},{word:"UMBRELLA",emoji:"☔"},{word:"BALLOON",emoji:"🎈"},{word:"KITE",emoji:"🪁"},
+ {word:"BALL",emoji:"⚽"},{word:"BIKE",emoji:"🚲"},{word:"CAR",emoji:"🚗"},{word:"BUS",emoji:"🚌"},
+ {word:"TRAIN",emoji:"🚂"},{word:"PLANE",emoji:"✈️"},{word:"BOAT",emoji:"⛵"},{word:"SHIP",emoji:"🚢"},
+ {word:"ROCKET",emoji:"🚀"},{word:"CLOUD",emoji:"☁️"},{word:"RAIN",emoji:"🌧️"},{word:"SNOW",emoji:"❄️"},
+ {word:"RAINBOW",emoji:"🌈"},{word:"TREE",emoji:"🌳"},{word:"FLOWER",emoji:"🌸"},{word:"LEAF",emoji:"🍃"},
+ {word:"GRASS",emoji:"🌱"},{word:"MOUNTAIN",emoji:"⛰️"},{word:"RIVER",emoji:"🏞️"},{word:"OCEAN",emoji:"🌊"},
+ {word:"BEACH",emoji:"🏖️"},{word:"ISLAND",emoji:"🏝️"},{word:"FIRE",emoji:"🔥"},{word:"WATER",emoji:"💧"},
+ {word:"EARTH",emoji:"🌍"},{word:"HEART",emoji:"❤️"},{word:"SMILE",emoji:"😀"},{word:"CROWN",emoji:"👑"},
+ {word:"KEY",emoji:"🔑"},{word:"GIFT",emoji:"🎁"},{word:"MUSIC",emoji:"🎵"},{word:"GUITAR",emoji:"🎸"}
+];
+
+var G={
+  pool:[], idx:0, total:10, letterIdx:0, correct:0,
+  spawnTimer:null, active:false, letterCount:0
+};
+
+function startGame(){
+  clearGameBalloons();
+  var shuffled=GWORDS.slice().sort(function(){return Math.random()-.5});
+  G.pool=shuffled.slice(0,G.total);
+  G.idx=0; G.correct=0; G.active=true;
+  document.getElementById('g-results').style.display='none';
+  document.getElementById('g-playcard').style.display='block';
+  var fb=document.getElementById('g-fb'); fb.className='fb'; fb.textContent='';
+  renderGameWord();
+}
+
+function renderGameWord(){
+  var w=G.pool[G.idx];
+  G.letterIdx=0;
+  document.getElementById('g-clue-em').textContent=w.emoji;
+  document.getElementById('g-score').textContent='Score: '+Math.round((G.correct/G.total)*100)+'%';
+  document.getElementById('g-remain').textContent=(G.total-G.idx-1)+' items remaining';
+  var dashHtml='';
+  for(var i=0;i<w.word.length;i++) dashHtml+='<div class="g-dash" id="gd'+i+'"></div>';
+  document.getElementById('g-dashes').innerHTML=dashHtml;
+
+  var wdHtml='';
+  for(var i=0;i<G.total;i++){
+    var cls='g-dot'+(i<G.idx?' done':(i===G.idx?' cur':''));
+    wdHtml+='<div class="'+cls+'"></div>';
+  }
+  document.getElementById('g-word-dots').innerHTML=wdHtml;
+
+  var ldHtml='';
+  for(var i=0;i<w.word.length;i++) ldHtml+='<div class="g-dot" id="gld'+i+'"></div>';
+  document.getElementById('g-letter-dots').innerHTML=ldHtml;
+
+  clearGameBalloons();
+  spawnGameLoop();
+}
+
+function clearGameBalloons(){
+  if(G.spawnTimer){clearInterval(G.spawnTimer);G.spawnTimer=null;}
+  var area=document.getElementById('balloon-area');
+  if(area) area.innerHTML='';
+}
+
+var GCOLORS=['#5BBDE4','#F0607A','#A87DE8','#4DC99A','#F47C5A','#F5C842'];
+var GLETTERS='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+function spawnGameLoop(){
+  spawnBalloon();
+  G.spawnTimer=setInterval(spawnBalloon,1100);
+}
+
+function spawnBalloon(){
+  var area=document.getElementById('balloon-area');
+  if(!area) return;
+  if(area.children.length>=5) return;
+  var w=G.pool[G.idx];
+  if(!w) return;
+  var needed=w.word[G.letterIdx];
+  var letter;
+  if(Math.random()<0.45 && needed){
+    letter=needed;
+  } else {
+    letter=GLETTERS[Math.floor(Math.random()*GLETTERS.length)];
+  }
+  var el=document.createElement('div');
+  el.className='balloon';
+  el.textContent=letter;
+  el.style.left=(8+Math.random()*76)+'%';
+  el.style.background=GCOLORS[Math.floor(Math.random()*GCOLORS.length)];
+  var dur=(6.5+Math.random()*2.5).toFixed(2);
+  el.style.animationDuration=dur+'s';
+  el.onclick=function(){popBalloon(el,letter);};
+  el.addEventListener('animationend',function(){
+    if(el.parentNode) el.parentNode.removeChild(el);
+  });
+  area.appendChild(el);
+}
+
+function popBalloon(el,letter){
+  if(!G.active || el.classList.contains('popping') || el.classList.contains('missing')) return;
+  var w=G.pool[G.idx];
+  var needed=w.word[G.letterIdx];
+  if(letter===needed){
+    el.classList.add('popping');
+    setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},260);
+    var dash=document.getElementById('gd'+G.letterIdx);
+    if(dash) dash.textContent=letter;
+    var ld=document.getElementById('gld'+G.letterIdx);
+    if(ld) ld.classList.add('done');
+    confetti();
+    G.letterIdx++;
+    if(G.letterIdx>=w.word.length){
+      wordComplete();
+    }
+  } else {
+    el.classList.add('missing');
+    setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},320);
+  }
+}
+
+function wordComplete(){
+  G.active=false;
+  clearGameBalloons();
+  G.correct++;
+  addStars(3);
+  var w=G.pool[G.idx];
+  setFbGame('🎉 "'+w.word+'" — great popping! +3 stars!','ok');
+  speak(w.word);
+  setTimeout(function(){
+    G.idx++;
+    if(G.idx>=G.total) endGameRound();
+    else{ G.active=true; renderGameWord(); }
+  },1400);
+}
+
+function skipGameWord(){
+  if(!G.active) return;
+  G.active=false;
+  clearGameBalloons();
+  var w=G.pool[G.idx];
+  setFbGame('⏭ Skipped! The word was "'+w.word+'"','bad');
+  setTimeout(function(){
+    G.idx++;
+    if(G.idx>=G.total) endGameRound();
+    else{ G.active=true; renderGameWord(); }
+  },1000);
+}
+
+function endGameRound(){
+  clearGameBalloons();
+  document.getElementById('g-playcard').style.display='none';
+  document.getElementById('g-results').style.display='block';
+  var pct=Math.round((G.correct/G.total)*100);
+  document.getElementById('g-res-sc').textContent=pct+'%';
+  var mg='Keep practicing your letters!';
+  if(pct>=90) mg='Balloon Pop champion! Incredible spelling!';
+  else if(pct>=70) mg='Awesome popping! You know your words!';
+  else if(pct>=50) mg='Nice work! Getting better every round!';
+  document.getElementById('g-res-mg').textContent=mg;
+  if(pct>=80) earnBadge(3);
+  confetti();
+}
+
+function setFbGame(msg,type){
+  var fb=document.getElementById('g-fb');
+  fb.className='fb '+type; fb.textContent=msg;
+}
+
+function gameSpeakWord(){
+  var w=G.pool[G.idx];
+  if(w) speak(w.word);
+}
+
 /* ── NAV ── */
 function go(name){
   var pages=document.querySelectorAll('.pg');
@@ -881,6 +1141,7 @@ function go(name){
   if(name==='progress') drawProgress();
   if(name==='library'){renderBooks('all');resetLibPills();}
   if(name==='spelling') renderWord();
+  if(name==='game') startGame(); else { G.active=false; clearGameBalloons(); }
   window.scrollTo(0,0);
 }
 
