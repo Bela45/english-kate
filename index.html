@@ -176,6 +176,37 @@ body{
 .wpill{background:#f5f5fa;border-radius:9px;padding:8px 6px;font-weight:800;font-size:.82rem;text-align:center;border:2px solid #e8e8f0}
 .wpill.done{background:#e0fff2;border-color:var(--mint);color:#1a7a50}
 
+/* ── SYLLABLE PRACTICE ── */
+.syl-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.syl-ctr{font-size:.78rem;font-weight:800;color:#bbb}
+.syl-chip-score{font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:700;color:var(--lilac);background:#f4efff;padding:4px 12px;border-radius:50px}
+.syl-card{text-align:center;padding:26px 14px 22px;background:linear-gradient(135deg,#f0f9ff,#f7f0ff);border-radius:var(--r-md);margin-bottom:16px}
+.syl-em{font-size:4.4rem;display:block;margin-bottom:10px}
+.syl-tag{display:inline-block;font-size:.68rem;font-weight:800;color:var(--coral);text-transform:uppercase;letter-spacing:.6px;background:rgba(244,124,90,.12);padding:3px 12px;border-radius:50px;margin-bottom:14px}
+.syl-word-row{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:2px;margin-bottom:6px}
+.syl-chip{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:'Baloo 2',cursive;font-weight:800;font-size:1.85rem;
+  padding:8px 12px;border-radius:12px;
+  background:#fff;border:2px solid #ded8f5;color:var(--ink);cursor:pointer;
+  transition:transform .15s,background .15s,border-color .15s;
+  -webkit-tap-highlight-color:transparent;
+  box-shadow:0 3px 8px rgba(30,24,64,.06);
+}
+@media (max-width:400px){.syl-chip{font-size:1.4rem;padding:6px 9px}}
+.syl-chip:active{transform:scale(.92)}
+.syl-chip.speaking{background:linear-gradient(135deg,var(--lilac),var(--sky));color:#fff;border-color:transparent}
+.syl-dash{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.85rem;color:#cfc9e6;margin:0 -2px}
+.syl-count{font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:16px}
+.syl-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+.syl-nav-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.syl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px;margin-top:10px}
+.syl-gitem{background:#f5f5fa;border-radius:10px;padding:9px 6px;text-align:center;border:2px solid #e8e8f0;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.syl-gitem:active{transform:scale(.95)}
+.syl-gitem.cur{background:#f0e8ff;border-color:var(--lilac)}
+.syl-gitem .sg-em{font-size:1.5rem;display:block;margin-bottom:3px}
+.syl-gitem .sg-w{font-family:'Baloo 2',cursive;font-size:.72rem;font-weight:700;color:var(--ink);word-break:break-word}
+
 /* ── QUIZ ── */
 .qhero{text-align:center;padding:20px 14px}
 .qhero .qbig{font-size:3.5rem;display:block;margin-bottom:10px;animation:mascot 2s infinite}
@@ -416,6 +447,7 @@ body{
 <nav class="bnav">
   <button class="nb on" onclick="go('home')"     data-p="home">    <span class="ni">🏠</span><span class="nl">Home</span></button>
   <button class="nb"    onclick="go('spelling')" data-p="spelling"><span class="ni">✏️</span><span class="nl">Spelling</span></button>
+  <button class="nb"    onclick="go('syll')"     data-p="syll">    <span class="ni">🧩</span><span class="nl">Syllables</span></button>
   <button class="nb"    onclick="go('quiz')"     data-p="quiz">    <span class="ni">🎯</span><span class="nl">Quiz</span></button>
   <button class="nb"    onclick="go('game')"     data-p="game">    <span class="ni">🎈</span><span class="nl">Game</span></button>
   <button class="nb"    onclick="go('library')"  data-p="library"> <span class="ni">📖</span><span class="nl">Library</span></button>
@@ -478,6 +510,39 @@ body{
   <div class="card">
     <div class="ptitle" style="font-size:1.2rem;margin-bottom:8px">📋 Word List</div>
     <div class="wlist" id="wlist"></div>
+  </div>
+</div>
+
+<!-- SYLLABLE PRACTICE -->
+<div id="pg-syll" class="pg">
+  <div class="ptitle">🧩 Syllable Reading Practice</div>
+  <div class="psub">Tap each syllable — or the whole word — to hear it spoken!</div>
+  <div class="card">
+    <div class="syl-head">
+      <span class="syl-ctr" id="syl-ctr">Word 1 of 100</span>
+      <span class="syl-chip-score" id="syl-score">Seen: 0</span>
+    </div>
+    <div class="pbar"><div class="pfill" id="syl-bar" style="width:1%"></div></div>
+    <div class="syl-card">
+      <span class="syl-em" id="syl-em">🐱</span>
+      <span class="syl-tag" id="syl-tag">1 syllable</span>
+      <div class="syl-word-row" id="syl-word-row"></div>
+      <div class="syl-count" id="syl-count">Tap a piece above to hear it!</div>
+      <button class="btn btn-p" onclick="speakWholeSyllWord()">🔊 Say Whole Word</button>
+    </div>
+    <div class="syl-btn-row">
+      <button class="btn btn-o" onclick="prevSyllWord()">⬅ Previous</button>
+      <button class="btn btn-g" onclick="nextSyllWord()">Next ➡️</button>
+    </div>
+    <div class="syl-nav-row">
+      <button class="btn btn-o" onclick="shuffleSyllWords()">🔀 Shuffle Words</button>
+      <button class="btn btn-o" onclick="go('progress')">🏆 My Progress</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ptitle" style="font-size:1.2rem;margin-bottom:8px">📋 All Words</div>
+    <div class="psub" style="margin-bottom:10px">Tap any word to jump straight to it!</div>
+    <div class="syl-grid" id="syl-grid"></div>
   </div>
 </div>
 
@@ -1129,6 +1194,151 @@ function gameSpeakWord(){
   if(w) speak(w.word);
 }
 
+/* ── SYLLABLE PRACTICE — 100+ WORD BANK ── */
+/* s = syllable pieces (joined with a dash when shown), e = emoji picture */
+var SYLL_WORDS=[
+ {w:"CAT",e:"🐱",s:["CAT"]},{w:"DOG",e:"🐶",s:["DOG"]},{w:"SUN",e:"☀️",s:["SUN"]},
+ {w:"MOON",e:"🌙",s:["MOON"]},{w:"STAR",e:"⭐",s:["STAR"]},{w:"FISH",e:"🐟",s:["FISH"]},
+ {w:"BIRD",e:"🐦",s:["BIRD"]},{w:"FROG",e:"🐸",s:["FROG"]},{w:"BEAR",e:"🐻",s:["BEAR"]},
+ {w:"DUCK",e:"🦆",s:["DUCK"]},{w:"LION",e:"🦁",s:["LION"]},{w:"WOLF",e:"🐺",s:["WOLF"]},
+ {w:"DEER",e:"🦌",s:["DEER"]},{w:"TREE",e:"🌳",s:["TREE"]},{w:"LEAF",e:"🍃",s:["LEAF"]},
+ {w:"RAIN",e:"🌧️",s:["RAIN"]},{w:"SNOW",e:"❄️",s:["SNOW"]},{w:"FIRE",e:"🔥",s:["FIRE"]},
+ {w:"CAKE",e:"🎂",s:["CAKE"]},{w:"MILK",e:"🥛",s:["MILK"]},{w:"BALL",e:"⚽",s:["BALL"]},
+ {w:"BOOK",e:"📚",s:["BOOK"]},{w:"SHIP",e:"🚢",s:["SHIP"]},{w:"KNIGHT",e:"⚔️",s:["KNIGHT"]},
+ {w:"CROWN",e:"👑",s:["CROWN"]},{w:"HEART",e:"❤️",s:["HEART"]},{w:"CLOCK",e:"🕐",s:["CLOCK"]},
+ {w:"KITE",e:"🪁",s:["KITE"]},{w:"BUS",e:"🚌",s:["BUS"]},{w:"TRAIN",e:"🚂",s:["TRAIN"]},
+ {w:"PLANE",e:"✈️",s:["PLANE"]},{w:"BOAT",e:"⛵",s:["BOAT"]},{w:"GOAT",e:"🐐",s:["GOAT"]},
+ {w:"SHEEP",e:"🐑",s:["SHEEP"]},{w:"MOUSE",e:"🐭",s:["MOUSE"]},{w:"WHALE",e:"🐳",s:["WHALE"]},
+ {w:"SHARK",e:"🦈",s:["SHARK"]},{w:"CRAB",e:"🦀",s:["CRAB"]},{w:"GRAPE",e:"🍇",s:["GRAPE"]},
+ {w:"PEACH",e:"🍑",s:["PEACH"]},{w:"BREAD",e:"🍞",s:["BREAD"]},{w:"CHEESE",e:"🧀",s:["CHEESE"]},
+ {w:"BANANA",e:"🍌",s:["BA","NA","NA"]},{w:"APPLE",e:"🍎",s:["AP","PLE"]},
+ {w:"TABLE",e:"🪑",s:["TA","BLE"]},{w:"WINDOW",e:"🪟",s:["WIN","DOW"]},
+ {w:"PENCIL",e:"✏️",s:["PEN","CIL"]},{w:"CRAYON",e:"🖍️",s:["CRA","YON"]},
+ {w:"MONKEY",e:"🐒",s:["MON","KEY"]},{w:"TURTLE",e:"🐢",s:["TUR","TLE"]},
+ {w:"RABBIT",e:"🐰",s:["RAB","BIT"]},{w:"GIRAFFE",e:"🦒",s:["GI","RAFFE"]},
+ {w:"PENGUIN",e:"🐧",s:["PEN","GUIN"]},{w:"DOLPHIN",e:"🐬",s:["DOL","PHIN"]},
+ {w:"SPIDER",e:"🕷️",s:["SPI","DER"]},{w:"HAMSTER",e:"🐹",s:["HAM","STER"]},
+ {w:"LADYBUG",e:"🐞",s:["LA","DY","BUG"]},{w:"BALLOON",e:"🎈",s:["BAL","LOON"]},
+ {w:"RAINBOW",e:"🌈",s:["RAIN","BOW"]},{w:"MOUNTAIN",e:"⛰️",s:["MOUN","TAIN"]},
+ {w:"OCEAN",e:"🌊",s:["O","CEAN"]},{w:"ISLAND",e:"🏝️",s:["IS","LAND"]},
+ {w:"FOREST",e:"🌲",s:["FOR","EST"]},{w:"GARDEN",e:"🌷",s:["GAR","DEN"]},
+ {w:"FLOWER",e:"🌸",s:["FLOW","ER"]},{w:"CANDLE",e:"🕯️",s:["CAN","DLE"]},
+ {w:"BASKET",e:"🧺",s:["BAS","KET"]},{w:"BOTTLE",e:"🍼",s:["BOT","TLE"]},
+ {w:"BLANKET",e:"🛌",s:["BLAN","KET"]},{w:"KITCHEN",e:"🍳",s:["KIT","CHEN"]},
+ {w:"BATHROOM",e:"🛁",s:["BATH","ROOM"]},{w:"BEDROOM",e:"🛏️",s:["BED","ROOM"]},
+ {w:"AIRPORT",e:"✈️",s:["AIR","PORT"]},{w:"BUSSTOP",e:"🚏",s:["BUS","STOP"]},
+ {w:"TRAFFIC",e:"🚦",s:["TRAF","FIC"]},{w:"FIRETRUCK",e:"🚒",s:["FIRE","TRUCK"]},
+ {w:"SANDWICH",e:"🥪",s:["SAND","WICH"]},{w:"PANCAKE",e:"🥞",s:["PAN","CAKE"]},
+ {w:"POPCORN",e:"🍿",s:["POP","CORN"]},{w:"CARROT",e:"🥕",s:["CAR","ROT"]},
+ {w:"BIRTHDAY",e:"🎂",s:["BIRTH","DAY"]},{w:"WEEKEND",e:"📅",s:["WEEK","END"]},
+ {w:"MORNING",e:"🌅",s:["MORN","ING"]},{w:"SUNSET",e:"🌇",s:["SUN","SET"]},
+ {w:"SUNRISE",e:"🌄",s:["SUN","RISE"]},{w:"THUNDER",e:"⛈️",s:["THUN","DER"]},
+ {w:"LIGHTNING",e:"⚡",s:["LIGHT","NING"]},{w:"EARTHQUAKE",e:"🌍",s:["EARTH","QUAKE"]},
+ {w:"DRAGON",e:"🐉",s:["DRA","GON"]},{w:"PRINCESS",e:"👸",s:["PRIN","CESS"]},
+ {w:"CASTLE",e:"🏰",s:["CAS","TLE"]},{w:"TREASURE",e:"💰",s:["TREA","SURE"]},
+ {w:"PIRATE",e:"🏴‍☠️",s:["PI","RATE"]},{w:"WIZARD",e:"🧙",s:["WIZ","ARD"]},
+ {w:"MERMAID",e:"🧜‍♀️",s:["MER","MAID"]},
+ {w:"ELEPHANT",e:"🐘",s:["EL","E","PHANT"]},{w:"OCTOPUS",e:"🐙",s:["OC","TO","PUS"]},
+ {w:"BUTTERFLY",e:"🦋",s:["BUT","TER","FLY"]},{w:"KANGAROO",e:"🦘",s:["KAN","GA","ROO"]},
+ {w:"ALLIGATOR",e:"🐊",s:["AL","LI","GA","TOR"]},{w:"CATERPILLAR",e:"🐛",s:["CAT","ER","PIL","LAR"]},
+ {w:"UMBRELLA",e:"☔",s:["UM","BREL","LA"]},{w:"LIBRARY",e:"📚",s:["LI","BRA","RY"]},
+ {w:"HOSPITAL",e:"🏥",s:["HOS","PI","TAL"]},{w:"BICYCLE",e:"🚲",s:["BI","CY","CLE"]},
+ {w:"MOTORCYCLE",e:"🏍️",s:["MO","TOR","CY","CLE"]},{w:"AMBULANCE",e:"🚑",s:["AM","BU","LANCE"]},
+ {w:"HELICOPTER",e:"🚁",s:["HE","LI","COP","TER"]},{w:"HAMBURGER",e:"🍔",s:["HAM","BUR","GER"]},
+ {w:"SPAGHETTI",e:"🍝",s:["SPA","GHET","TI"]},{w:"WATERMELON",e:"🍉",s:["WA","TER","MEL","ON"]},
+ {w:"STRAWBERRY",e:"🍓",s:["STRAW","BER","RY"]},{w:"PINEAPPLE",e:"🍍",s:["PINE","AP","PLE"]},
+ {w:"CUCUMBER",e:"🥒",s:["CU","CUM","BER"]},{w:"BROCCOLI",e:"🥦",s:["BROC","CO","LI"]},
+ {w:"POTATO",e:"🥔",s:["PO","TA","TO"]},{w:"TOMATO",e:"🍅",s:["TO","MA","TO"]},
+ {w:"AVOCADO",e:"🥑",s:["AV","O","CA","DO"]},{w:"LEMONADE",e:"🍋",s:["LEM","ON","ADE"]},
+ {w:"CHOCOLATE",e:"🍫",s:["CHOC","O","LATE"]},{w:"VANILLA",e:"🍦",s:["VA","NIL","LA"]},
+ {w:"HOLIDAY",e:"🏖️",s:["HOL","I","DAY"]},{w:"EVENING",e:"🌆",s:["EV","EN","ING"]},
+ {w:"VOLCANO",e:"🌋",s:["VOL","CA","NO"]},{w:"WATERFALL",e:"🌊",s:["WA","TER","FALL"]},
+ {w:"DINOSAUR",e:"🦕",s:["DI","NO","SAUR"]},{w:"UNICORN",e:"🦄",s:["U","NI","CORN"]},
+ {w:"ASTRONAUT",e:"👨‍🚀",s:["AS","TRO","NAUT"]},{w:"UNIVERSE",e:"🌌",s:["U","NI","VERSE"]}
+];
+
+var SY={idx:0,order:[]};
+function initSyllOrder(){
+  SY.order=[];
+  for(var i=0;i<SYLL_WORDS.length;i++) SY.order.push(i);
+}
+
+function renderSyll(){
+  var item=SYLL_WORDS[SY.order[SY.idx]];
+  document.getElementById('syl-em').textContent=item.e;
+  document.getElementById('syl-ctr').textContent='Word '+(SY.idx+1)+' of '+SY.order.length;
+  document.getElementById('syl-score').textContent='Seen: '+(SY.idx+1)+'/'+SY.order.length;
+  document.getElementById('syl-bar').style.width=(((SY.idx+1)/SY.order.length)*100)+'%';
+  document.getElementById('syl-tag').textContent=item.s.length+' syllable'+(item.s.length>1?'s':'');
+  document.getElementById('syl-count').textContent=item.s.length>1
+    ? 'Tap each piece, then say the whole word!'
+    : 'This is a one-syllable word — tap it to hear it!';
+
+  var row=document.getElementById('syl-word-row');
+  row.innerHTML='';
+  for(var i=0;i<item.s.length;i++){
+    var chip=document.createElement('span');
+    chip.className='syl-chip';
+    chip.textContent=item.s[i];
+    row.appendChild(chip);
+    (function(txt,el){
+      el.onclick=function(){ speak(txt.toLowerCase(),el); };
+    })(item.s[i],chip);
+    if(i<item.s.length-1){
+      var dash=document.createElement('span');
+      dash.className='syl-dash';
+      dash.textContent='-';
+      row.appendChild(dash);
+    }
+  }
+  renderSyllGrid();
+}
+
+function speakWholeSyllWord(){
+  var item=SYLL_WORDS[SY.order[SY.idx]];
+  var chips=document.querySelectorAll('#syl-word-row .syl-chip');
+  var lastChip=chips[chips.length-1];
+  speak(item.w.toLowerCase(),lastChip);
+}
+
+function nextSyllWord(){
+  SY.idx=(SY.idx+1)%SY.order.length;
+  renderSyll();
+}
+function prevSyllWord(){
+  SY.idx=(SY.idx-1+SY.order.length)%SY.order.length;
+  renderSyll();
+}
+function shuffleSyllWords(){
+  for(var i=SY.order.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=SY.order[i]; SY.order[i]=SY.order[j]; SY.order[j]=tmp;
+  }
+  SY.idx=0;
+  renderSyll();
+}
+function jumpToSyllWord(origIdx){
+  var pos=SY.order.indexOf(origIdx);
+  if(pos===-1) pos=0;
+  SY.idx=pos;
+  renderSyll();
+  var card=document.querySelector('#pg-syll .syl-card');
+  if(card) card.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function renderSyllGrid(){
+  var grid=document.getElementById('syl-grid');
+  var curOrig=SY.order[SY.idx];
+  var html='';
+  for(var i=0;i<SYLL_WORDS.length;i++){
+    var it=SYLL_WORDS[i];
+    var dashed=it.s.join('-');
+    html+='<div class="syl-gitem'+(i===curOrig?' cur':'')+'" onclick="jumpToSyllWord('+i+')">'+
+      '<span class="sg-em">'+it.e+'</span><div class="sg-w">'+dashed+'</div></div>';
+  }
+  grid.innerHTML=html;
+}
+
 /* ── NAV ── */
 function go(name){
   var pages=document.querySelectorAll('.pg');
@@ -1141,6 +1351,7 @@ function go(name){
   if(name==='progress') drawProgress();
   if(name==='library'){renderBooks('all');resetLibPills();}
   if(name==='spelling') renderWord();
+  if(name==='syll') renderSyll();
   if(name==='game') startGame(); else { G.active=false; clearGameBalloons(); }
   window.scrollTo(0,0);
 }
@@ -1567,6 +1778,7 @@ document.getElementById('wotd-w').textContent=tod.w;
 document.getElementById('wotd-d').textContent=tod.d;
 
 renderWord();
+initSyllOrder();
 </script>
 </body>
 </html>
