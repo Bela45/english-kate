@@ -197,6 +197,21 @@ body{
 .syl-chip:active{transform:scale(.92)}
 .syl-chip.speaking{background:linear-gradient(135deg,var(--lilac),var(--sky));color:#fff;border-color:transparent}
 .syl-dash{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.85rem;color:#cfc9e6;margin:0 -2px}
+.syl-fullword{
+  font-family:'Baloo 2',cursive;font-weight:800;font-size:1.05rem;
+  letter-spacing:1px;color:var(--muted);background:rgba(255,255,255,.7);
+  display:inline-block;padding:4px 16px;border-radius:50px;margin-bottom:14px;
+}
+.syl-teacher{
+  display:flex;align-items:center;gap:10px;text-align:left;
+  background:#fff;border:2px solid rgba(168,125,232,.2);
+  border-radius:16px;padding:10px 14px;margin-bottom:14px;
+}
+.syl-teacher-em{font-size:1.9rem;flex-shrink:0;animation:mascot 3s ease-in-out infinite}
+.syl-teacher-msg{font-size:.82rem;font-weight:700;color:var(--ink);line-height:1.4}
+.syl-mic-btn{position:relative}
+.syl-mic-btn.listening{animation:micPulse 1s ease-in-out infinite}
+@keyframes micPulse{0%,100%{box-shadow:0 4px 14px rgba(240,96,122,.32)}50%{box-shadow:0 4px 26px rgba(240,96,122,.65)}}
 .syl-count{font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:16px}
 .syl-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
 .syl-nav-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
@@ -527,8 +542,15 @@ body{
       <span class="syl-em" id="syl-em">🐱</span>
       <span class="syl-tag" id="syl-tag">1 syllable</span>
       <div class="syl-word-row" id="syl-word-row"></div>
+      <div class="syl-fullword" id="syl-fullword">CAT</div>
       <div class="syl-count" id="syl-count">Tap a piece above to hear it!</div>
       <button class="btn btn-p" onclick="speakWholeSyllWord()">🔊 Say Whole Word</button>
+      <div class="syl-teacher" id="syl-teacher">
+        <span class="syl-teacher-em">🦉</span>
+        <span class="syl-teacher-msg" id="syl-teacher-msg">Sound out each piece, then try reading the whole word to me!</span>
+      </div>
+      <button class="btn btn-r syl-mic-btn" id="syl-mic-btn" onclick="startSyllListening()">🎤 Your Turn! Say the Word</button>
+      <div class="fb" id="syl-mic-fb"></div>
     </div>
     <div class="syl-btn-row">
       <button class="btn btn-o" onclick="prevSyllWord()">⬅ Previous</button>
@@ -1211,50 +1233,50 @@ var SYLL_WORDS=[
  {w:"SHEEP",e:"🐑",s:["SHEEP"]},{w:"MOUSE",e:"🐭",s:["MOUSE"]},{w:"WHALE",e:"🐳",s:["WHALE"]},
  {w:"SHARK",e:"🦈",s:["SHARK"]},{w:"CRAB",e:"🦀",s:["CRAB"]},{w:"GRAPE",e:"🍇",s:["GRAPE"]},
  {w:"PEACH",e:"🍑",s:["PEACH"]},{w:"BREAD",e:"🍞",s:["BREAD"]},{w:"CHEESE",e:"🧀",s:["CHEESE"]},
- {w:"BANANA",e:"🍌",s:["BA","NA","NA"]},{w:"APPLE",e:"🍎",s:["AP","PLE"]},
- {w:"TABLE",e:"🪑",s:["TA","BLE"]},{w:"WINDOW",e:"🪟",s:["WIN","DOW"]},
- {w:"PENCIL",e:"✏️",s:["PEN","CIL"]},{w:"CRAYON",e:"🖍️",s:["CRA","YON"]},
- {w:"MONKEY",e:"🐒",s:["MON","KEY"]},{w:"TURTLE",e:"🐢",s:["TUR","TLE"]},
- {w:"RABBIT",e:"🐰",s:["RAB","BIT"]},{w:"GIRAFFE",e:"🦒",s:["GI","RAFFE"]},
- {w:"PENGUIN",e:"🐧",s:["PEN","GUIN"]},{w:"DOLPHIN",e:"🐬",s:["DOL","PHIN"]},
- {w:"SPIDER",e:"🕷️",s:["SPI","DER"]},{w:"HAMSTER",e:"🐹",s:["HAM","STER"]},
- {w:"LADYBUG",e:"🐞",s:["LA","DY","BUG"]},{w:"BALLOON",e:"🎈",s:["BAL","LOON"]},
- {w:"RAINBOW",e:"🌈",s:["RAIN","BOW"]},{w:"MOUNTAIN",e:"⛰️",s:["MOUN","TAIN"]},
- {w:"OCEAN",e:"🌊",s:["O","CEAN"]},{w:"ISLAND",e:"🏝️",s:["IS","LAND"]},
+ {w:"BANANA",e:"🍌",s:["BA","NA","NA"],ph:["buh","nan","uh"]},{w:"APPLE",e:"🍎",s:["AP","PLE"],ph:["ap","pul"]},
+ {w:"TABLE",e:"🪑",s:["TA","BLE"],ph:["tay","bul"]},{w:"WINDOW",e:"🪟",s:["WIN","DOW"],ph:["win","doh"]},
+ {w:"PENCIL",e:"✏️",s:["PEN","CIL"],ph:["pen","sil"]},{w:"CRAYON",e:"🖍️",s:["CRA","YON"],ph:["kray","on"]},
+ {w:"MONKEY",e:"🐒",s:["MON","KEY"],ph:["mun","kee"]},{w:"TURTLE",e:"🐢",s:["TUR","TLE"],ph:["tur","tul"]},
+ {w:"RABBIT",e:"🐰",s:["RAB","BIT"]},{w:"GIRAFFE",e:"🦒",s:["GI","RAFFE"],ph:["juh","raff"]},
+ {w:"PENGUIN",e:"🐧",s:["PEN","GUIN"],ph:["pen","gwin"]},{w:"DOLPHIN",e:"🐬",s:["DOL","PHIN"],ph:["dol","fin"]},
+ {w:"SPIDER",e:"🕷️",s:["SPI","DER"],ph:["spy","der"]},{w:"HAMSTER",e:"🐹",s:["HAM","STER"]},
+ {w:"LADYBUG",e:"🐞",s:["LA","DY","BUG"],ph:["lay","dee","bug"]},{w:"BALLOON",e:"🎈",s:["BAL","LOON"],ph:["buh","loon"]},
+ {w:"RAINBOW",e:"🌈",s:["RAIN","BOW"],ph:["rain","boh"]},{w:"MOUNTAIN",e:"⛰️",s:["MOUN","TAIN"],ph:["mown","tin"]},
+ {w:"OCEAN",e:"🌊",s:["O","CEAN"],ph:["oh","shun"]},{w:"ISLAND",e:"🏝️",s:["IS","LAND"],ph:["eye","lund"]},
  {w:"FOREST",e:"🌲",s:["FOR","EST"]},{w:"GARDEN",e:"🌷",s:["GAR","DEN"]},
- {w:"FLOWER",e:"🌸",s:["FLOW","ER"]},{w:"CANDLE",e:"🕯️",s:["CAN","DLE"]},
- {w:"BASKET",e:"🧺",s:["BAS","KET"]},{w:"BOTTLE",e:"🍼",s:["BOT","TLE"]},
+ {w:"FLOWER",e:"🌸",s:["FLOW","ER"]},{w:"CANDLE",e:"🕯️",s:["CAN","DLE"],ph:["can","dul"]},
+ {w:"BASKET",e:"🧺",s:["BAS","KET"]},{w:"BOTTLE",e:"🍼",s:["BOT","TLE"],ph:["bot","tul"]},
  {w:"BLANKET",e:"🛌",s:["BLAN","KET"]},{w:"KITCHEN",e:"🍳",s:["KIT","CHEN"]},
  {w:"BATHROOM",e:"🛁",s:["BATH","ROOM"]},{w:"BEDROOM",e:"🛏️",s:["BED","ROOM"]},
  {w:"AIRPORT",e:"✈️",s:["AIR","PORT"]},{w:"BUSSTOP",e:"🚏",s:["BUS","STOP"]},
- {w:"TRAFFIC",e:"🚦",s:["TRAF","FIC"]},{w:"FIRETRUCK",e:"🚒",s:["FIRE","TRUCK"]},
+ {w:"TRAFFIC",e:"🚦",s:["TRAF","FIC"],ph:["traf","ik"]},{w:"FIRETRUCK",e:"🚒",s:["FIRE","TRUCK"]},
  {w:"SANDWICH",e:"🥪",s:["SAND","WICH"]},{w:"PANCAKE",e:"🥞",s:["PAN","CAKE"]},
  {w:"POPCORN",e:"🍿",s:["POP","CORN"]},{w:"CARROT",e:"🥕",s:["CAR","ROT"]},
  {w:"BIRTHDAY",e:"🎂",s:["BIRTH","DAY"]},{w:"WEEKEND",e:"📅",s:["WEEK","END"]},
  {w:"MORNING",e:"🌅",s:["MORN","ING"]},{w:"SUNSET",e:"🌇",s:["SUN","SET"]},
  {w:"SUNRISE",e:"🌄",s:["SUN","RISE"]},{w:"THUNDER",e:"⛈️",s:["THUN","DER"]},
  {w:"LIGHTNING",e:"⚡",s:["LIGHT","NING"]},{w:"EARTHQUAKE",e:"🌍",s:["EARTH","QUAKE"]},
- {w:"DRAGON",e:"🐉",s:["DRA","GON"]},{w:"PRINCESS",e:"👸",s:["PRIN","CESS"]},
- {w:"CASTLE",e:"🏰",s:["CAS","TLE"]},{w:"TREASURE",e:"💰",s:["TREA","SURE"]},
- {w:"PIRATE",e:"🏴‍☠️",s:["PI","RATE"]},{w:"WIZARD",e:"🧙",s:["WIZ","ARD"]},
+ {w:"DRAGON",e:"🐉",s:["DRA","GON"],ph:["drag","un"]},{w:"PRINCESS",e:"👸",s:["PRIN","CESS"],ph:["prin","sess"]},
+ {w:"CASTLE",e:"🏰",s:["CAS","TLE"],ph:["ka","sul"]},{w:"TREASURE",e:"💰",s:["TREA","SURE"],ph:["trezh","er"]},
+ {w:"PIRATE",e:"🏴‍☠️",s:["PI","RATE"],ph:["pie","rut"]},{w:"WIZARD",e:"🧙",s:["WIZ","ARD"],ph:["wiz","erd"]},
  {w:"MERMAID",e:"🧜‍♀️",s:["MER","MAID"]},
- {w:"ELEPHANT",e:"🐘",s:["EL","E","PHANT"]},{w:"OCTOPUS",e:"🐙",s:["OC","TO","PUS"]},
- {w:"BUTTERFLY",e:"🦋",s:["BUT","TER","FLY"]},{w:"KANGAROO",e:"🦘",s:["KAN","GA","ROO"]},
- {w:"ALLIGATOR",e:"🐊",s:["AL","LI","GA","TOR"]},{w:"CATERPILLAR",e:"🐛",s:["CAT","ER","PIL","LAR"]},
- {w:"UMBRELLA",e:"☔",s:["UM","BREL","LA"]},{w:"LIBRARY",e:"📚",s:["LI","BRA","RY"]},
- {w:"HOSPITAL",e:"🏥",s:["HOS","PI","TAL"]},{w:"BICYCLE",e:"🚲",s:["BI","CY","CLE"]},
- {w:"MOTORCYCLE",e:"🏍️",s:["MO","TOR","CY","CLE"]},{w:"AMBULANCE",e:"🚑",s:["AM","BU","LANCE"]},
- {w:"HELICOPTER",e:"🚁",s:["HE","LI","COP","TER"]},{w:"HAMBURGER",e:"🍔",s:["HAM","BUR","GER"]},
- {w:"SPAGHETTI",e:"🍝",s:["SPA","GHET","TI"]},{w:"WATERMELON",e:"🍉",s:["WA","TER","MEL","ON"]},
- {w:"STRAWBERRY",e:"🍓",s:["STRAW","BER","RY"]},{w:"PINEAPPLE",e:"🍍",s:["PINE","AP","PLE"]},
- {w:"CUCUMBER",e:"🥒",s:["CU","CUM","BER"]},{w:"BROCCOLI",e:"🥦",s:["BROC","CO","LI"]},
- {w:"POTATO",e:"🥔",s:["PO","TA","TO"]},{w:"TOMATO",e:"🍅",s:["TO","MA","TO"]},
- {w:"AVOCADO",e:"🥑",s:["AV","O","CA","DO"]},{w:"LEMONADE",e:"🍋",s:["LEM","ON","ADE"]},
- {w:"CHOCOLATE",e:"🍫",s:["CHOC","O","LATE"]},{w:"VANILLA",e:"🍦",s:["VA","NIL","LA"]},
- {w:"HOLIDAY",e:"🏖️",s:["HOL","I","DAY"]},{w:"EVENING",e:"🌆",s:["EV","EN","ING"]},
- {w:"VOLCANO",e:"🌋",s:["VOL","CA","NO"]},{w:"WATERFALL",e:"🌊",s:["WA","TER","FALL"]},
- {w:"DINOSAUR",e:"🦕",s:["DI","NO","SAUR"]},{w:"UNICORN",e:"🦄",s:["U","NI","CORN"]},
- {w:"ASTRONAUT",e:"👨‍🚀",s:["AS","TRO","NAUT"]},{w:"UNIVERSE",e:"🌌",s:["U","NI","VERSE"]}
+ {w:"ELEPHANT",e:"🐘",s:["EL","E","PHANT"],ph:["el","uh","fant"]},{w:"OCTOPUS",e:"🐙",s:["OC","TO","PUS"],ph:["ock","tuh","pus"]},
+ {w:"BUTTERFLY",e:"🦋",s:["BUT","TER","FLY"]},{w:"KANGAROO",e:"🦘",s:["KAN","GA","ROO"],ph:["kan","guh","roo"]},
+ {w:"ALLIGATOR",e:"🐊",s:["AL","LI","GA","TOR"],ph:["al","ih","gay","tor"]},{w:"CATERPILLAR",e:"🐛",s:["CAT","ER","PIL","LAR"],ph:["kat","er","pil","er"]},
+ {w:"UMBRELLA",e:"☔",s:["UM","BREL","LA"],ph:["um","brel","uh"]},{w:"LIBRARY",e:"📚",s:["LI","BRA","RY"],ph:["lie","brair","ee"]},
+ {w:"HOSPITAL",e:"🏥",s:["HOS","PI","TAL"],ph:["hos","pih","tul"]},{w:"BICYCLE",e:"🚲",s:["BI","CY","CLE"],ph:["bye","sik","ul"]},
+ {w:"MOTORCYCLE",e:"🏍️",s:["MO","TOR","CY","CLE"],ph:["moh","ter","sy","kul"]},{w:"AMBULANCE",e:"🚑",s:["AM","BU","LANCE"],ph:["am","byuh","lunss"]},
+ {w:"HELICOPTER",e:"🚁",s:["HE","LI","COP","TER"],ph:["hel","ih","kop","ter"]},{w:"HAMBURGER",e:"🍔",s:["HAM","BUR","GER"]},
+ {w:"SPAGHETTI",e:"🍝",s:["SPA","GHET","TI"],ph:["spuh","get","ee"]},{w:"WATERMELON",e:"🍉",s:["WA","TER","MEL","ON"],ph:["wah","ter","mel","un"]},
+ {w:"STRAWBERRY",e:"🍓",s:["STRAW","BER","RY"]},{w:"PINEAPPLE",e:"🍍",s:["PINE","AP","PLE"],ph:["pine","ap","ul"]},
+ {w:"CUCUMBER",e:"🥒",s:["CU","CUM","BER"],ph:["kyoo","kum","ber"]},{w:"BROCCOLI",e:"🥦",s:["BROC","CO","LI"],ph:["brok","uh","lee"]},
+ {w:"POTATO",e:"🥔",s:["PO","TA","TO"],ph:["puh","tay","toh"]},{w:"TOMATO",e:"🍅",s:["TO","MA","TO"],ph:["tuh","may","toh"]},
+ {w:"AVOCADO",e:"🥑",s:["AV","O","CA","DO"],ph:["ah","vuh","kah","doh"]},{w:"LEMONADE",e:"🍋",s:["LEM","ON","ADE"],ph:["lem","un","aid"]},
+ {w:"CHOCOLATE",e:"🍫",s:["CHOC","O","LATE"],ph:["chok","uh","lit"]},{w:"VANILLA",e:"🍦",s:["VA","NIL","LA"],ph:["vuh","nil","uh"]},
+ {w:"HOLIDAY",e:"🏖️",s:["HOL","I","DAY"],ph:["hol","ih","day"]},{w:"EVENING",e:"🌆",s:["EV","EN","ING"],ph:["eev","en","ing"]},
+ {w:"VOLCANO",e:"🌋",s:["VOL","CA","NO"],ph:["vol","kay","noh"]},{w:"WATERFALL",e:"🌊",s:["WA","TER","FALL"],ph:["wah","ter","fall"]},
+ {w:"DINOSAUR",e:"🦕",s:["DI","NO","SAUR"],ph:["dye","nuh","sor"]},{w:"UNICORN",e:"🦄",s:["U","NI","CORN"],ph:["yoo","nih","corn"]},
+ {w:"ASTRONAUT",e:"👨‍🚀",s:["AS","TRO","NAUT"],ph:["as","truh","nawt"]},{w:"UNIVERSE",e:"🌌",s:["U","NI","VERSE"],ph:["yoo","nih","verss"]}
 ];
 
 var SY={idx:0,order:[]};
@@ -1262,6 +1284,20 @@ function initSyllOrder(){
   SY.order=[];
   for(var i=0;i<SYLL_WORDS.length;i++) SY.order.push(i);
 }
+
+/* Friendly "teacher" prompts shown/spoken between words */
+var TEACHER_PROMPTS_MULTI=[
+  "Sound out each piece, then try reading the whole word to me!",
+  "Great — now put the pieces together and say the word!",
+  "Take your time with each piece, then blend them together!",
+  "You're doing wonderfully — now try the whole word!",
+  "Listen to each piece, then say the word out loud for me!"
+];
+var TEACHER_PROMPTS_SINGLE=[
+  "This word is just one syllable — say it out loud for me!",
+  "One quick piece! Give it a try out loud!",
+  "Easy one! Say the whole word for me!"
+];
 
 function renderSyll(){
   var item=SYLL_WORDS[SY.order[SY.idx]];
@@ -1273,6 +1309,7 @@ function renderSyll(){
   document.getElementById('syl-count').textContent=item.s.length>1
     ? 'Tap each piece, then say the whole word!'
     : 'This is a one-syllable word — tap it to hear it!';
+  document.getElementById('syl-fullword').textContent=item.w;
 
   var row=document.getElementById('syl-word-row');
   row.innerHTML='';
@@ -1281,9 +1318,9 @@ function renderSyll(){
     chip.className='syl-chip';
     chip.textContent=item.s[i];
     row.appendChild(chip);
-    (function(txt,el){
-      el.onclick=function(){ speak(txt.toLowerCase(),el); };
-    })(item.s[i],chip);
+    (function(idx,el){
+      el.onclick=function(){ speak(syllSpeechText(item,idx),el); };
+    })(i,chip);
     if(i<item.s.length-1){
       var dash=document.createElement('span');
       dash.className='syl-dash';
@@ -1292,6 +1329,24 @@ function renderSyll(){
     }
   }
   renderSyllGrid();
+
+  // Reset mic feedback + set a fresh teacher prompt for this word
+  var micFb=document.getElementById('syl-mic-fb');
+  if(micFb){ micFb.className='fb'; micFb.textContent=''; }
+  var prompts = item.s.length>1 ? TEACHER_PROMPTS_MULTI : TEACHER_PROMPTS_SINGLE;
+  var msg = prompts[Math.floor(Math.random()*prompts.length)];
+  setTeacherMsg(msg);
+}
+
+/* Returns the best phonetic text to *speak* for syllable piece i (falls back to raw spelling) */
+function syllSpeechText(item,i){
+  if(item.ph && item.ph[i]) return item.ph[i];
+  return item.s[i].toLowerCase();
+}
+
+function setTeacherMsg(msg){
+  var el=document.getElementById('syl-teacher-msg');
+  if(el) el.textContent=msg;
 }
 
 function speakWholeSyllWord(){
@@ -1337,6 +1392,105 @@ function renderSyllGrid(){
       '<span class="sg-em">'+it.e+'</span><div class="sg-w">'+dashed+'</div></div>';
   }
   grid.innerHTML=html;
+}
+
+/* ── PUPIL SPEAKS: SPEECH-RECOGNITION "TEACHER" INTERACTION ── */
+var SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+var syllRecognizer = null;
+var syllListening = false;
+
+var TEACHER_PRAISE=[
+  "Wonderful reading! Well done! 🌟",
+  "You got it! I'm so proud of you! 🎉",
+  "Fantastic job sounding that out! ⭐",
+  "Excellent! That's exactly right! 🏆",
+  "Beautiful reading, superstar! 🌈"
+];
+var TEACHER_TRY_AGAIN=[
+  "Almost! Listen to the word again and try once more. 💜",
+  "Good try! Let's sound it out together — tap each piece first.",
+  "Not quite yet — you can do it! Try saying it again.",
+  "Close! Take a breath and try the whole word again."
+];
+var TEACHER_NO_SUPPORT="I can't listen on this device or browser yet — try Chrome so I can hear you read! 🎤";
+var TEACHER_LISTENING="I'm listening... go ahead and say the word! 👂";
+var TEACHER_NO_SPEECH="I didn't quite hear you — tap the microphone and try again!";
+
+function startSyllListening(){
+  if(syllListening) return;
+  var micBtn=document.getElementById('syl-mic-btn');
+  var fb=document.getElementById('syl-mic-fb');
+
+  if(!SpeechRec){
+    setTeacherMsg(TEACHER_NO_SUPPORT);
+    if(fb){ fb.className='fb bad'; fb.textContent=TEACHER_NO_SUPPORT; }
+    return;
+  }
+
+  var item=SYLL_WORDS[SY.order[SY.idx]];
+
+  try{
+    syllRecognizer = new SpeechRec();
+  }catch(e){
+    setTeacherMsg(TEACHER_NO_SUPPORT);
+    return;
+  }
+
+  syllRecognizer.lang='en-US';
+  syllRecognizer.maxAlternatives=3;
+  syllRecognizer.interimResults=false;
+
+  syllListening=true;
+  if(micBtn) micBtn.classList.add('listening');
+  setTeacherMsg(TEACHER_LISTENING);
+  if(fb){ fb.className='fb'; fb.textContent=''; }
+
+  syllRecognizer.onresult=function(ev){
+    var said='';
+    for(var r=0;r<ev.results[0].length;r++){
+      said += ' ' + ev.results[0][r].transcript;
+    }
+    said = said.replace(/[^a-zA-Z]/g,'').toUpperCase();
+    var target = item.w.replace(/[^A-Z]/g,'');
+
+    if(said.indexOf(target)!==-1 || target.indexOf(said)!==-1){
+      var praise = TEACHER_PRAISE[Math.floor(Math.random()*TEACHER_PRAISE.length)];
+      setTeacherMsg(praise);
+      if(fb){ fb.className='fb ok'; fb.textContent=praise+' +2 stars!'; }
+      addStars(2);
+      S.wordsLearned++;
+      S.mastered['syll_'+item.w]=true;
+      earnBadge(2);
+      confetti();
+    } else {
+      var again = TEACHER_TRY_AGAIN[Math.floor(Math.random()*TEACHER_TRY_AGAIN.length)];
+      setTeacherMsg(again);
+      if(fb){ fb.className='fb bad'; fb.textContent='I heard "'+said.toLowerCase()+'" — '+again; }
+    }
+  };
+
+  syllRecognizer.onerror=function(ev){
+    if(ev.error==='no-speech'){
+      setTeacherMsg(TEACHER_NO_SPEECH);
+      if(fb){ fb.className='fb bad'; fb.textContent=TEACHER_NO_SPEECH; }
+    } else if(ev.error==='not-allowed' || ev.error==='service-not-allowed'){
+      var msg='Please allow microphone access so I can hear you read!';
+      setTeacherMsg(msg);
+      if(fb){ fb.className='fb bad'; fb.textContent=msg; }
+    }
+  };
+
+  syllRecognizer.onend=function(){
+    syllListening=false;
+    if(micBtn) micBtn.classList.remove('listening');
+  };
+
+  try{
+    syllRecognizer.start();
+  }catch(e){
+    syllListening=false;
+    if(micBtn) micBtn.classList.remove('listening');
+  }
 }
 
 /* ── NAV ── */
