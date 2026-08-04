@@ -181,7 +181,10 @@ body{
 .syl-ctr{font-size:.78rem;font-weight:800;color:#bbb}
 .syl-chip-score{font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:700;color:var(--lilac);background:#f4efff;padding:4px 12px;border-radius:50px}
 .syl-card{text-align:center;padding:26px 14px 22px;background:linear-gradient(135deg,#f0f9ff,#f7f0ff);border-radius:var(--r-md);margin-bottom:16px}
-.syl-em{font-size:4.4rem;display:block;margin-bottom:10px}
+.syl-em{font-size:4.4rem;display:block;margin-bottom:10px;transition:transform .2s}
+.syl-em.syl-em-locked{animation:mascot 3s ease-in-out infinite;filter:grayscale(.15);opacity:.85}
+@keyframes syllReveal{0%{transform:scale(.35) rotate(-8deg);opacity:0}55%{transform:scale(1.2) rotate(4deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+.syl-em.syl-em-reveal{animation:syllReveal .55s ease}
 .syl-tag{display:inline-block;font-size:.68rem;font-weight:800;color:var(--coral);text-transform:uppercase;letter-spacing:.6px;background:rgba(244,124,90,.12);padding:3px 12px;border-radius:50px;margin-bottom:14px}
 .syl-word-row{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:2px;margin-bottom:6px}
 .syl-chip{
@@ -1299,9 +1302,31 @@ var TEACHER_PROMPTS_SINGLE=[
   "Easy one! Say the whole word for me!"
 ];
 
+/* Praise messages grouped by difficulty (number of syllables).
+   Harder words (more syllables) get bigger, more excited praise. */
+var PRAISE_BY_DIFFICULTY={
+  1:["Nice!","Well done!","Good one!"],
+  2:["Good job!","Nice work!","Well done!"],
+  3:["Great!","Awesome!","Fantastic!"],
+  4:["Amazing!","Incredible!","Superstar!"]
+};
+
+function getPraiseMessage(item){
+  var n=item.s.length;
+  var tier=n>=4?4:n;
+  var arr=PRAISE_BY_DIFFICULTY[tier];
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
 function renderSyll(){
   var item=SYLL_WORDS[SY.order[SY.idx]];
-  document.getElementById('syl-em').textContent=item.e;
+
+  /* Hide the picture until the word is read correctly */
+  var emEl=document.getElementById('syl-em');
+  emEl.textContent='❓';
+  emEl.classList.remove('syl-em-reveal');
+  emEl.classList.add('syl-em-locked');
+
   document.getElementById('syl-ctr').textContent='Word '+(SY.idx+1)+' of '+SY.order.length;
   document.getElementById('syl-score').textContent='Seen: '+(SY.idx+1)+'/'+SY.order.length;
   document.getElementById('syl-bar').style.width=(((SY.idx+1)/SY.order.length)*100)+'%';
@@ -1336,6 +1361,16 @@ function renderSyll(){
   var prompts = item.s.length>1 ? TEACHER_PROMPTS_MULTI : TEACHER_PROMPTS_SINGLE;
   var msg = prompts[Math.floor(Math.random()*prompts.length)];
   setTeacherMsg(msg);
+}
+
+/* Reveal the hidden picture once the word has been read correctly */
+function revealSyllPicture(item){
+  var emEl=document.getElementById('syl-em');
+  emEl.classList.remove('syl-em-locked');
+  emEl.textContent=item.e;
+  emEl.classList.remove('syl-em-reveal');
+  void emEl.offsetWidth; /* restart animation */
+  emEl.classList.add('syl-em-reveal');
 }
 
 /* Returns the best phonetic text to *speak* for syllable piece i (falls back to raw spelling) */
@@ -1399,13 +1434,6 @@ var SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || nu
 var syllRecognizer = null;
 var syllListening = false;
 
-var TEACHER_PRAISE=[
-  "Wonderful reading! Well done! 🌟",
-  "You got it! I'm so proud of you! 🎉",
-  "Fantastic job sounding that out! ⭐",
-  "Excellent! That's exactly right! 🏆",
-  "Beautiful reading, superstar! 🌈"
-];
 var TEACHER_TRY_AGAIN=[
   "Almost! Listen to the word again and try once more. 💜",
   "Good try! Let's sound it out together — tap each piece first.",
@@ -1454,14 +1482,16 @@ function startSyllListening(){
     var target = item.w.replace(/[^A-Z]/g,'');
 
     if(said.indexOf(target)!==-1 || target.indexOf(said)!==-1){
-      var praise = TEACHER_PRAISE[Math.floor(Math.random()*TEACHER_PRAISE.length)];
-      setTeacherMsg(praise);
+      var praise = getPraiseMessage(item);
+      setTeacherMsg(praise+' 🎉');
       if(fb){ fb.className='fb ok'; fb.textContent=praise+' +2 stars!'; }
       addStars(2);
       S.wordsLearned++;
       S.mastered['syll_'+item.w]=true;
       earnBadge(2);
+      revealSyllPicture(item);
       confetti();
+      speak(item.w.toLowerCase());
     } else {
       var again = TEACHER_TRY_AGAIN[Math.floor(Math.random()*TEACHER_TRY_AGAIN.length)];
       setTeacherMsg(again);
