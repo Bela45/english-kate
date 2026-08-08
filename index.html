@@ -264,6 +264,9 @@ body{
 .finp:focus{border-color:var(--lilac)}
 .ffb{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;text-align:center;min-height:26px;margin-bottom:10px}
 .nbwrap{text-align:center;margin-top:12px}
+.qvoice-row{display:flex;gap:8px;margin-bottom:14px}
+.qvoice-row .btn{width:auto;flex:1;padding:11px 10px;font-size:.82rem}
+#quiz-mic-btn.listening{animation:micPulse 1s ease-in-out infinite}
 .rescard{text-align:center;padding:30px 20px;background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh)}
 .rescard .trophy{font-size:4rem;display:block;animation:mascot 2s infinite;margin-bottom:10px}
 .rescard h3{font-family:'Baloo 2',cursive;font-size:1.9rem;font-weight:800}
@@ -1030,7 +1033,8 @@ var S={
   stars:0,wordsLearned:0,quizzesTaken:0,booksRead:0,
   mastered:{},booksReadSet:{},
   spLevel:0,spIdx:0,spScore:0,
-  qType:'mc',qIdx:0,qOk:0,qBad:0,qWords:[],qWait:false,qCorrectIdx:-1
+  qType:'mc',qIdx:0,qOk:0,qBad:0,qWords:[],qWait:false,qCorrectIdx:-1,
+  qOptions:[],qSpeakText:''
 };
 
 /* ── BALLOON POP GAME — 100+ WORD BANK ── */
@@ -1537,6 +1541,10 @@ function go(name){
   if(name==='spelling') renderWord();
   if(name==='syll') renderSyll();
   if(name==='game') startGame(); else { G.active=false; clearGameBalloons(); }
+  if(name!=='quiz'){
+    if(quizRecognizer && quizListening){ try{quizRecognizer.stop();}catch(e){} }
+    if(synth) synth.cancel();
+  }
   window.scrollTo(0,0);
 }
 
@@ -1685,6 +1693,11 @@ function renderQ(){
       '<div class="qnum">Question '+(S.qIdx+1)+' of 10</div>'+
       '<div class="qtxt">'+w.emoji+'&nbsp; '+w.hint+'</div>'+
       '<div class="word-df" style="margin-bottom:14px">'+w.def+'</div>'+
+      '<div class="qvoice-row">'+
+        '<button class="btn btn-p" onclick="replayQuizQuestion()">🔊 Hear Again</button>'+
+        '<button class="btn btn-r" id="quiz-mic-btn" onclick="startQuizListening()">🎤 Say the Word</button>'+
+      '</div>'+
+      '<div class="fb" id="quiz-mic-fb"></div>'+
       '<input id="finp" class="finp" type="text" placeholder="Type the word..."'+
         ' maxlength="12" autocomplete="off" autocorrect="off"'+
         ' autocapitalize="characters" spellcheck="false" inputmode="text">'+
@@ -1696,6 +1709,9 @@ function renderQ(){
     });
     finp.addEventListener('keydown',function(e){if(e.key==='Enter')checkFill();});
     setTimeout(function(){if(finp)finp.focus();},80);
+
+    S.qOptions=[];
+    S.qSpeakText='Here is a clue. '+w.hint+'. '+w.def+'. What is the word?';
 
   } else {
     var others=[];
@@ -1722,13 +1738,123 @@ function renderQ(){
     card.innerHTML=
       '<div class="qnum">Question '+(S.qIdx+1)+' of 10</div>'+
       '<div class="qtxt">'+qtxt+'</div>'+
+      '<div class="qvoice-row">'+
+        '<button class="btn btn-p" onclick="replayQuizQuestion()">🔊 Hear Again</button>'+
+        '<button class="btn btn-r" id="quiz-mic-btn" onclick="startQuizListening()">🎤 Answer by Voice</button>'+
+      '</div>'+
+      '<div class="fb" id="quiz-mic-fb"></div>'+
       '<div class="opts">'+optsHtml+'</div>';
+
+    S.qOptions=four;
+    S.qSpeakText=isMatch
+      ? ('Which word means: '+w.def+'?')
+      : (w.hint+'. '+w.def+'. Which word is it? '+four.map(function(o){return o.word;}).join(', '));
+  }
+
+  setTimeout(function(){ speak(S.qSpeakText); },400);
+}
+
+function replayQuizQuestion(){
+  if(S.qSpeakText) speak(S.qSpeakText);
+}
+
+var quizRecognizer=null;
+var quizListening=false;
+var QUIZ_NO_SUPPORT="I can't listen on this device or browser yet — try Chrome so I can hear your answer! 🎤";
+var QUIZ_LISTENING="I'm listening... say your answer! 👂";
+var QUIZ_NO_SPEECH="I didn't quite hear you — tap the mic and try again!";
+var QUIZ_NO_MATCH=[
+  "I didn't catch a matching answer — try saying it again!",
+  "Hmm, I'm not sure that matches — give it another try!",
+  "Let's try that again — say the word clearly for me!"
+];
+
+function startQuizListening(){
+  if(quizListening || S.qWait) return;
+  var micBtn=document.getElementById('quiz-mic-btn');
+  var fb=document.getElementById('quiz-mic-fb');
+
+  if(!SpeechRec){
+    if(fb){ fb.className='fb bad'; fb.textContent=QUIZ_NO_SUPPORT; }
+    return;
+  }
+
+  try{
+    quizRecognizer=new SpeechRec();
+  }catch(e){
+    if(fb){ fb.className='fb bad'; fb.textContent=QUIZ_NO_SUPPORT; }
+    return;
+  }
+
+  quizRecognizer.lang='en-US';
+  quizRecognizer.maxAlternatives=3;
+  quizRecognizer.interimResults=false;
+
+  quizListening=true;
+  if(micBtn) micBtn.classList.add('listening');
+  if(fb){ fb.className='fb'; fb.textContent=QUIZ_LISTENING; }
+
+  quizRecognizer.onresult=function(ev){
+    var said='';
+    for(var r=0;r<ev.results[0].length;r++){
+      said += ' ' + ev.results[0][r].transcript;
+    }
+    said = said.replace(/[^a-zA-Z]/g,'').toUpperCase();
+
+    if(S.qType==='fill'){
+      var inp=document.getElementById('finp');
+      var w=S.qWords[S.qIdx];
+      if(inp) inp.value=said;
+      if(said===w.word){
+        checkFill();
+      } else if(fb){
+        var msg=QUIZ_NO_MATCH[Math.floor(Math.random()*QUIZ_NO_MATCH.length)];
+        fb.className='fb bad';
+        fb.textContent='I heard "'+said.toLowerCase()+'" — '+msg;
+      }
+    } else {
+      var found=-1;
+      for(var i=0;i<S.qOptions.length;i++){
+        if(S.qOptions[i].word===said){found=i;break;}
+      }
+      if(found!==-1){
+        checkMC(found);
+      } else if(fb){
+        var msg2=QUIZ_NO_MATCH[Math.floor(Math.random()*QUIZ_NO_MATCH.length)];
+        fb.className='fb bad';
+        fb.textContent='I heard "'+said.toLowerCase()+'" — '+msg2;
+      }
+    }
+  };
+
+  quizRecognizer.onerror=function(ev){
+    if(!fb) return;
+    if(ev.error==='no-speech'){
+      fb.className='fb bad'; fb.textContent=QUIZ_NO_SPEECH;
+    } else if(ev.error==='not-allowed' || ev.error==='service-not-allowed'){
+      fb.className='fb bad'; fb.textContent='Please allow microphone access so I can hear your answer!';
+    }
+  };
+
+  quizRecognizer.onend=function(){
+    quizListening=false;
+    if(micBtn) micBtn.classList.remove('listening');
+  };
+
+  try{
+    quizRecognizer.start();
+  }catch(e){
+    quizListening=false;
+    if(micBtn) micBtn.classList.remove('listening');
   }
 }
 
 function checkMC(chosen){
   if(S.qWait) return;
   S.qWait=true;
+  if(quizRecognizer && quizListening){ try{quizRecognizer.stop();}catch(e){} }
+  var micBtn=document.getElementById('quiz-mic-btn');
+  if(micBtn){ micBtn.disabled=true; micBtn.classList.remove('listening'); }
   var correct=S.qCorrectIdx;
   var opts=document.querySelectorAll('.opt');
   for(var i=0;i<opts.length;i++) opts[i].disabled=true;
@@ -1748,6 +1874,9 @@ function checkFill(){
   var typed=inp.value.replace(/[^a-zA-Z]/g,'').toUpperCase();
   var w=S.qWords[S.qIdx];
   S.qWait=true; inp.disabled=true;
+  if(quizRecognizer && quizListening){ try{quizRecognizer.stop();}catch(e){} }
+  var micBtn=document.getElementById('quiz-mic-btn');
+  if(micBtn){ micBtn.disabled=true; micBtn.classList.remove('listening'); }
   var fb=document.getElementById('ffb');
   if(typed===w.word){
     fb.innerHTML='<span style="color:var(--mint)">🎉 Correct! "'+w.word+'"</span>';
